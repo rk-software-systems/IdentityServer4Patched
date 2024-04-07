@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.UnitTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.IntegrationTests", "test\IdentityServer.IntegrationTests\IdentityServer.IntegrationTests.csproj", "{94501373-478A-478D-8C17-6AC52E3438CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.Storage", "..\Storage\src\IdentityServer4.Storage.csproj", "{E54BF2EF-A2E0-4E42-8C7A-BE1F29CF04B0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,10 +37,6 @@ Global
 		{94501373-478A-478D-8C17-6AC52E3438CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94501373-478A-478D-8C17-6AC52E3438CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94501373-478A-478D-8C17-6AC52E3438CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E54BF2EF-A2E0-4E42-8C7A-BE1F29CF04B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E54BF2EF-A2E0-4E42-8C7A-BE1F29CF04B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E54BF2EF-A2E0-4E42-8C7A-BE1F29CF04B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E54BF2EF-A2E0-4E42-8C7A-BE1F29CF04B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

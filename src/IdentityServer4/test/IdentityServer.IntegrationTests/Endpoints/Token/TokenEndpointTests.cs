@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Newtonsoft.Json.Linq;
@@ -16,20 +16,20 @@ namespace IdentityServer.IntegrationTests.Endpoints.Token
     {
         private const string Category = "Token endpoint";
 
-        private string client_id = "client";
-        private string client_secret = "secret";
+        private readonly string client_id = "client";
+        private readonly string client_secret = "secret";
 
-        private string scope_name = "api";
-        private string scope_secret = "api_secret";
+        private readonly string scope_name = "api";
+        private readonly string scope_secret = "api_secret";
 
-        private IdentityServerPipeline _mockPipeline = new IdentityServerPipeline();
+        private IdentityServerPipeline _mockPipeline = new();
 
         public TokenEndpointTests()
         {
             _mockPipeline.Clients.Add(new Client
             {
                 ClientId = client_id,
-                ClientSecrets = new List<Secret> { new Secret(client_secret.Sha256()) },
+                ClientSecrets = new List<Secret> { new(client_secret.Sha256()) },
                 AllowedGrantTypes = { GrantType.ClientCredentials, GrantType.ResourceOwnerPassword },
                 AllowedScopes = new List<string> { "api" },
             });

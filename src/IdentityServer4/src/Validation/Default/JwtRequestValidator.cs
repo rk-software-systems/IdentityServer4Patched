@@ -14,8 +14,6 @@ using IdentityServer4.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace IdentityServer4.Validation
 {
@@ -57,7 +55,7 @@ namespace IdentityServer4.Validation
         protected readonly ILogger Logger;
         
         /// <summary>
-        /// The optione
+        /// The options.
         /// </summary>
         protected readonly IdentityServerOptions Options;
 

@@ -44,19 +44,19 @@ namespace IdentityServer4.Validation
 
         /// <summary>
         /// Gets or sets the effective access token lifetime for the current request.
-        /// This value is initally read from the client configuration but can be modified in the request pipeline
+        /// This value is initially read from the client configuration but can be modified in the request pipeline
         /// </summary>
         public int AccessTokenLifetime { get; set; }
 
         /// <summary>
         /// Gets or sets the client claims for the current request.
-        /// This value is initally read from the client configuration but can be modified in the request pipeline
+        /// This value is initially read from the client configuration but can be modified in the request pipeline
         /// </summary>
         public ICollection<Claim> ClientClaims { get; set; } = new HashSet<Claim>(new ClaimComparer());
 
         /// <summary>
         /// Gets or sets the effective access token type for the current request.
-        /// This value is initally read from the client configuration but can be modified in the request pipeline
+        /// This value is initially read from the client configuration but can be modified in the request pipeline
         /// </summary>
         public AccessTokenType AccessTokenType { get; set; }
 

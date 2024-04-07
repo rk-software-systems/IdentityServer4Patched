@@ -22,7 +22,7 @@ namespace IdentityServer4.Configuration
         /// <summary>
         /// Specifies a separate domain to run the MTLS endpoints on.
         /// If the string does not contain any dots, a subdomain is assumed - e.g. main domain: identityserver.local, MTLS domain: mtls.identityserver.local
-        /// If the string contains dots, a completely separate domain is assumend, e.g. main domain: identity.app.com, MTLS domain: mtls.app.com. In this case you must set a static issuer name on the options.
+        /// If the string contains dots, a completely separate domain is assumed, e.g. main domain: identity.app.com, MTLS domain: mtls.app.com. In this case you must set a static issuer name on the options.
         /// </summary>
         public string DomainName { get; set; }
 

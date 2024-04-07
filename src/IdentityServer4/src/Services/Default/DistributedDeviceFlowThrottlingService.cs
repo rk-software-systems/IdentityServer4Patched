@@ -2,12 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System;
-using System.Threading.Tasks;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Caching.Distributed;
+using System;
+using System.Threading.Tasks;
 
 namespace IdentityServer4.Services
 {
@@ -18,7 +17,7 @@ namespace IdentityServer4.Services
     public class DistributedDeviceFlowThrottlingService : IDeviceFlowThrottlingService
     {
         private readonly IDistributedCache _cache;
-        private readonly ISystemClock _clock;
+        private readonly TimeProvider _timeProvider;
         private readonly IdentityServerOptions _options;
 
         private const string KeyPrefix = "devicecode_";
@@ -27,15 +26,15 @@ namespace IdentityServer4.Services
         /// Initializes a new instance of the <see cref="DistributedDeviceFlowThrottlingService"/> class.
         /// </summary>
         /// <param name="cache">The cache.</param>
-        /// <param name="clock">The clock.</param>
+        /// <param name="timeProvider">The time provider.</param>
         /// <param name="options">The options.</param>
         public DistributedDeviceFlowThrottlingService(
             IDistributedCache cache,
-            ISystemClock clock,
+            TimeProvider timeProvider,
             IdentityServerOptions options)
         {
             _cache = cache;
-            _clock = clock;
+            _timeProvider = timeProvider;
             _options = options;
         }
 
@@ -49,31 +48,31 @@ namespace IdentityServer4.Services
         public async Task<bool> ShouldSlowDown(string deviceCode, DeviceCode details)
         {
             if (deviceCode == null) throw new ArgumentNullException(nameof(deviceCode));
-            
+
             var key = KeyPrefix + deviceCode;
-            var options = new DistributedCacheEntryOptions {AbsoluteExpiration = _clock.UtcNow.AddSeconds(details.Lifetime)};
+            var options = new DistributedCacheEntryOptions { AbsoluteExpiration = _timeProvider.GetUtcNow().AddSeconds(details.Lifetime) };
 
             var lastSeenAsString = await _cache.GetStringAsync(key);
 
             // record new
             if (lastSeenAsString == null)
             {
-                await _cache.SetStringAsync(key, _clock.UtcNow.ToString("O"), options);
+                await _cache.SetStringAsync(key, _timeProvider.GetUtcNow().ToString("O"), options);
                 return false;
             }
 
             // check interval
             if (DateTime.TryParse(lastSeenAsString, out var lastSeen))
             {
-                if (_clock.UtcNow < lastSeen.AddSeconds(_options.DeviceFlow.Interval))
+                if (_timeProvider.GetUtcNow() < lastSeen.AddSeconds(_options.DeviceFlow.Interval))
                 {
-                    await _cache.SetStringAsync(key, _clock.UtcNow.ToString("O"), options);
+                    await _cache.SetStringAsync(key, _timeProvider.GetUtcNow().ToString("O"), options);
                     return true;
                 }
             }
 
             // store current and continue
-            await _cache.SetStringAsync(key, _clock.UtcNow.ToString("O"), options);
+            await _cache.SetStringAsync(key, _timeProvider.GetUtcNow().ToString("O"), options);
             return false;
         }
     }
