@@ -46,7 +46,7 @@ namespace IdentityServer4.Models
         public Token AccessToken { get; set; }
 
         /// <summary>
-        /// Gets or sets the original subject that requiested the token.
+        /// Gets or sets the original subject that requested the token.
         /// </summary>
         /// <value>
         /// The subject.

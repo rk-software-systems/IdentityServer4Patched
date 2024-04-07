@@ -324,10 +324,7 @@ namespace IdentityServer4.Models
         /// </exception>
         public static void ValidateGrantTypes(IEnumerable<string> grantTypes)
         {
-            if (grantTypes == null)
-            {
-                throw new ArgumentNullException(nameof(grantTypes));
-            }
+            ArgumentNullException.ThrowIfNull(grantTypes);
 
             // spaces are not allowed in grant types
             foreach (var type in grantTypes)
