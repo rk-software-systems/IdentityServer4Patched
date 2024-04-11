@@ -38,7 +38,7 @@ jobs:
 
     - run: ./build.sh
     
-    - run: ls src/Storage
+    - run: ls src/Storage/artifacts
 
     - run: |
-        dotnet nuget push .\artifacts\*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
+        dotnet nuget push ./src/Storage/artifacts/*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
