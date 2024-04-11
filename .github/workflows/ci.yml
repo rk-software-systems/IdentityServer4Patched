@@ -17,11 +17,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [macOS-latest, ubuntu-latest, windows-latest]
+        runs-on: [ubuntu-latest]
     name: ${{ matrix.runs-on }}
     runs-on: ${{ matrix.runs-on }}
+    
     steps:
-    - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
+    - uses: actions/checkout@v2.4.0
+    
     - name: Setup SKDs
       uses: actions/setup-dotnet@v1
       with:
@@ -30,7 +32,7 @@ jobs:
 
     - run: dotnet --info
     
-    - run: ./create-nuget-config.sh
+    - run: ./create-nuget-config.sh ${{ secrets.NUGETKEY }}
 
     - run: ./build.sh
 
