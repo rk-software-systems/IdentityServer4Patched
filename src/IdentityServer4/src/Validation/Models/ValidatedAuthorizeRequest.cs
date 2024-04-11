@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -51,7 +51,7 @@ namespace IdentityServer4.Validation
         /// <value>
         /// The requested scopes.
         /// </value>
-        // todo: consider replacing with extension method to access Raw collection; would neeed to be done wholesale for all props.
+        // todo: consider replacing with extension method to access Raw collection; would need to be done wholesale for all props.
         public List<string> RequestedScopes { get; set; }
 
         /// <summary>

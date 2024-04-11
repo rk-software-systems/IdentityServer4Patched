@@ -3,22 +3,21 @@
 
 
 using IdentityModel;
+using IdentityServer4.Configuration;
 using IdentityServer4.Extensions;
+using IdentityServer4.Logging.Models;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
+using IdentityServer4.Stores;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using IdentityServer4.Stores;
-using IdentityServer4.Configuration;
-using IdentityServer4.Logging.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
 
 namespace IdentityServer4.Validation
 {
@@ -32,7 +31,7 @@ namespace IdentityServer4.Validation
         private readonly IClientStore _clients;
         private readonly IProfileService _profile;
         private readonly IKeyMaterialService _keys;
-        private readonly ISystemClock _clock;
+        private readonly TimeProvider _timeProvider;
         private readonly TokenValidationLog _log;
 
         public TokenValidator(
@@ -41,10 +40,9 @@ namespace IdentityServer4.Validation
             IClientStore clients,
             IProfileService profile,
             IReferenceTokenStore referenceTokenStore,
-            IRefreshTokenStore refreshTokenStore,
             ICustomTokenValidator customValidator,
             IKeyMaterialService keys,
-            ISystemClock clock,
+            TimeProvider timeProvider,
             ILogger<TokenValidator> logger)
         {
             _options = options;
@@ -54,7 +52,7 @@ namespace IdentityServer4.Validation
             _referenceTokenStore = referenceTokenStore;
             _customValidator = customValidator;
             _keys = keys;
-            _clock = clock;
+            _timeProvider = timeProvider;
             _logger = logger;
 
             _log = new TokenValidationLog();
@@ -359,7 +357,7 @@ namespace IdentityServer4.Validation
                 return Invalid(OidcConstants.ProtectedResourceErrors.InvalidToken);
             }
 
-            if (token.CreationTime.HasExceeded(token.Lifetime, _clock.UtcNow.UtcDateTime))
+            if (token.CreationTime.HasExceeded(token.Lifetime, _timeProvider.GetUtcNow().UtcDateTime))
             {
                 LogError("Token expired.");
 

@@ -34,9 +34,9 @@ namespace IdentityServer4.Services
         protected readonly IdentityServerOptions Options;
 
         /// <summary>
-        /// The clock
+        /// The time provider
         /// </summary>
-        protected readonly ISystemClock Clock;
+        protected readonly TimeProvider TimeProvider;
 
         /// <summary>
         /// The logger
@@ -91,19 +91,19 @@ namespace IdentityServer4.Services
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         /// <param name="handlers">The handlers.</param>
         /// <param name="options">The options.</param>
-        /// <param name="clock">The clock.</param>
+        /// <param name="tiimeProvider">The time provider.</param>
         /// <param name="logger">The logger.</param>
         public DefaultUserSession(
             IHttpContextAccessor httpContextAccessor,
             IAuthenticationHandlerProvider handlers,
             IdentityServerOptions options,
-            ISystemClock clock,
+            TimeProvider tiimeProvider,
             ILogger<IUserSession> logger)
         {
             HttpContextAccessor = httpContextAccessor;
             Handlers = handlers;
             Options = options;
-            Clock = clock;
+            TimeProvider = tiimeProvider;
             Logger = logger;
         }
 
@@ -154,8 +154,8 @@ namespace IdentityServer4.Services
         /// </exception>
         public virtual async Task<string> CreateSessionIdAsync(ClaimsPrincipal principal, AuthenticationProperties properties)
         {
-            if (principal == null) throw new ArgumentNullException(nameof(principal));
-            if (properties == null) throw new ArgumentNullException(nameof(properties));
+            ArgumentNullException.ThrowIfNull(principal);
+            ArgumentNullException.ThrowIfNull(properties);
 
             var currentSubjectId = (await GetUserAsync())?.GetSubjectId();
             var newSubjectId = principal.GetSubjectId();
@@ -223,7 +223,7 @@ namespace IdentityServer4.Services
             {
                 // only remove it if we have it in the request
                 var options = CreateSessionIdCookieOptions();
-                options.Expires = Clock.UtcNow.UtcDateTime.AddYears(-1);
+                options.Expires = TimeProvider.GetUtcNow().UtcDateTime.AddYears(-1);
 
                 HttpContext.Response.Cookies.Append(CheckSessionCookieName, ".", options);
             }
@@ -278,7 +278,7 @@ namespace IdentityServer4.Services
         /// <exception cref="ArgumentNullException">clientId</exception>
         public virtual async Task AddClientIdAsync(string clientId)
         {
-            if (clientId == null) throw new ArgumentNullException(nameof(clientId));
+            ArgumentNullException.ThrowIfNull(clientId);
 
             await AuthenticateAsync();
             if (Properties != null)

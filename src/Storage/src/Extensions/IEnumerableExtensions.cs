@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-#pragma warning disable 1591
-
 namespace IdentityServer4.Extensions
 {
     internal static class IEnumerableExtensions

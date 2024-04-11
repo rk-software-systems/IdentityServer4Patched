@@ -100,7 +100,7 @@ namespace IdentityServer4.Validation
         {
             if (request == null) return null;
             if (!request.IsOpenIdRequest) return null;
-            
+
             if (request.SessionId == null) return null;
 
             if (request.ClientId.IsMissing()) return null;
@@ -119,11 +119,7 @@ namespace IdentityServer4.Validation
 
             var bytes = Encoding.UTF8.GetBytes(clientId + origin + sessionId + salt);
             byte[] hash;
-
-            using (var sha = SHA256.Create())
-            {
-                hash = sha.ComputeHash(bytes);
-            }
+            hash = SHA256.HashData(bytes);
 
             return Base64Url.Encode(hash) + "." + salt;
         }

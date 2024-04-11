@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -84,9 +84,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddOidcStateDataFormatterCache(this IServiceCollection services, params string[] schemes)
         {
             services.AddSingleton<IPostConfigureOptions<OpenIdConnectOptions>>(
-                svcs => new ConfigureOpenIdConnectOptions(
+                serviceProvider => new ConfigureOpenIdConnectOptions(
                     schemes,
-                    svcs.GetRequiredService<IHttpContextAccessor>())
+                    serviceProvider.GetRequiredService<IHttpContextAccessor>())
             );
 
             return services;

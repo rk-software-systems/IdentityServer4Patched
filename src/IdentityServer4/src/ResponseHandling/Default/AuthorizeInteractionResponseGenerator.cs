@@ -37,24 +37,24 @@ namespace IdentityServer4.ResponseHandling
         protected readonly IProfileService Profile;
 
         /// <summary>
-        /// The clock
+        /// The Time Provider
         /// </summary>
-        protected readonly ISystemClock Clock;
+        protected readonly TimeProvider TimeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizeInteractionResponseGenerator"/> class.
         /// </summary>
-        /// <param name="clock">The clock.</param>
+        /// <param name="timeProvider">The Time Provider.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="consent">The consent.</param>
         /// <param name="profile">The profile.</param>
         public AuthorizeInteractionResponseGenerator(
-            ISystemClock clock,
+            TimeProvider timeProvider,
             ILogger<AuthorizeInteractionResponseGenerator> logger,
             IConsentService consent, 
             IProfileService profile)
         {
-            Clock = clock;
+            TimeProvider = timeProvider;
             Logger = logger;
             Consent = consent;
             Profile = profile;
@@ -178,7 +178,7 @@ namespace IdentityServer4.ResponseHandling
             if (request.MaxAge.HasValue)
             {
                 var authTime = request.Subject.GetAuthenticationTime();
-                if (Clock.UtcNow > authTime.AddSeconds(request.MaxAge.Value))
+                if (TimeProvider.GetUtcNow() > authTime.AddSeconds(request.MaxAge.Value))
                 {
                     Logger.LogInformation("Showing login: Requested MaxAge exceeded.");
 
@@ -208,7 +208,7 @@ namespace IdentityServer4.ResponseHandling
             if (request.Client.UserSsoLifetime.HasValue)
             {
                 var authTimeEpoch = request.Subject.GetAuthenticationTimeEpoch();
-                var nowEpoch = Clock.UtcNow.ToUnixTimeSeconds();
+                var nowEpoch = TimeProvider.GetUtcNow().ToUnixTimeSeconds();
 
                 var diff = nowEpoch - authTimeEpoch;
                 if (diff > request.Client.UserSsoLifetime.Value)
@@ -260,7 +260,7 @@ namespace IdentityServer4.ResponseHandling
                 // did user provide consent
                 if (consent == null)
                 {
-                    // user was not yet shown conset screen
+                    // user was not yet shown consent screen
                     response.IsConsent = true;
                     Logger.LogInformation("Showing consent: User has not yet consented");
                 }

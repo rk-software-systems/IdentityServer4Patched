@@ -174,7 +174,7 @@ namespace IdentityServer4.Stores
         }
 
         /// <summary>
-        /// Removes all items for a subject id / cliend id combination.
+        /// Removes all items for a subject id / client id combination.
         /// </summary>
         /// <param name="subjectId">The subject identifier.</param>
         /// <param name="clientId">The client identifier.</param>

@@ -18,12 +18,12 @@ namespace IdentityServer4.Extensions
         /// <param name="filter"></param>
         public static void Validate(this PersistedGrantFilter filter)
         {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
+            ArgumentNullException.ThrowIfNull(filter);
 
-            if (String.IsNullOrWhiteSpace(filter.ClientId) &&
-                String.IsNullOrWhiteSpace(filter.SessionId) &&
-                String.IsNullOrWhiteSpace(filter.SubjectId) &&
-                String.IsNullOrWhiteSpace(filter.Type))
+            if (string.IsNullOrWhiteSpace(filter.ClientId) &&
+                string.IsNullOrWhiteSpace(filter.SessionId) &&
+                string.IsNullOrWhiteSpace(filter.SubjectId) &&
+                string.IsNullOrWhiteSpace(filter.Type))
             {
                 throw new ArgumentException("No filter values set.", nameof(filter));
             }

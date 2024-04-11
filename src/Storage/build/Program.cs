@@ -1,6 +1,6 @@
-﻿namespace build
+namespace build
 {
-    partial class Program
+    sealed partial class Program
     {
         private const string Prefix = "Storage";
     }

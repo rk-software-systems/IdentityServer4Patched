@@ -65,7 +65,7 @@ namespace IdentityServer4
         public ClaimsPrincipal CreatePrincipal()
         {
             if (SubjectId.IsMissing()) throw new ArgumentException("SubjectId is mandatory", nameof(SubjectId));
-            var claims = new List<Claim> { new Claim(JwtClaimTypes.Subject, SubjectId) };
+            var claims = new List<Claim> { new(JwtClaimTypes.Subject, SubjectId) };
 
             if (DisplayName.IsPresent())
             {
@@ -82,7 +82,7 @@ namespace IdentityServer4
                 claims.Add(new Claim(JwtClaimTypes.AuthenticationTime, new DateTimeOffset(AuthenticationTime.Value).ToUnixTimeSeconds().ToString()));
             }
 
-            if (AuthenticationMethods.Any())
+            if (AuthenticationMethods.Count != 0)
             {
                 foreach (var amr in AuthenticationMethods)
                 {

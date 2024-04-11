@@ -4,6 +4,7 @@
 
 using IdentityModel;
 using IdentityServer4.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 
@@ -123,10 +124,10 @@ namespace IdentityServer4
 
         public static Dictionary<string, int> ProtectedResourceErrorStatusCodes = new Dictionary<string, int>
         {
-            { OidcConstants.ProtectedResourceErrors.InvalidToken,      401 },
-            { OidcConstants.ProtectedResourceErrors.ExpiredToken,      401 },
-            { OidcConstants.ProtectedResourceErrors.InvalidRequest,    400 },
-            { OidcConstants.ProtectedResourceErrors.InsufficientScope, 403 }
+            { OidcConstants.ProtectedResourceErrors.InvalidToken,      StatusCodes.Status401Unauthorized },
+            { OidcConstants.ProtectedResourceErrors.ExpiredToken,      StatusCodes.Status401Unauthorized },
+            { OidcConstants.ProtectedResourceErrors.InvalidRequest,    StatusCodes.Status400BadRequest },
+            { OidcConstants.ProtectedResourceErrors.InsufficientScope, StatusCodes.Status403Forbidden }
         };
         
         public static readonly Dictionary<string, IEnumerable<string>> ScopeToClaimsMapping = new Dictionary<string, IEnumerable<string>>

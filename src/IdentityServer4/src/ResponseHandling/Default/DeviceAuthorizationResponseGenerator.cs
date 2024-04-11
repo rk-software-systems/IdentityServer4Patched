@@ -36,9 +36,9 @@ namespace IdentityServer4.ResponseHandling
         protected readonly IDeviceFlowCodeService DeviceFlowCodeService;
 
         /// <summary>
-        /// The clock
+        /// The Time Provider
         /// </summary>
-        protected readonly ISystemClock Clock;
+        protected readonly TimeProvider TimeProvider;
 
         /// <summary>
         /// The logger
@@ -51,14 +51,14 @@ namespace IdentityServer4.ResponseHandling
         /// <param name="options">The options.</param>
         /// <param name="userCodeService">The user code service.</param>
         /// <param name="deviceFlowCodeService">The device flow code service.</param>
-        /// <param name="clock">The clock.</param>
+        /// <param name="timeProvider">The Time Provider.</param>
         /// <param name="logger">The logger.</param>
-        public DeviceAuthorizationResponseGenerator(IdentityServerOptions options, IUserCodeService userCodeService, IDeviceFlowCodeService deviceFlowCodeService, ISystemClock clock, ILogger<DeviceAuthorizationResponseGenerator> logger)
+        public DeviceAuthorizationResponseGenerator(IdentityServerOptions options, IUserCodeService userCodeService, IDeviceFlowCodeService deviceFlowCodeService, TimeProvider timeProvider, ILogger<DeviceAuthorizationResponseGenerator> logger)
         {
             Options = options;
             UserCodeService = userCodeService;
             DeviceFlowCodeService = deviceFlowCodeService;
-            Clock = clock;
+            TimeProvider = timeProvider;
             Logger = logger;
         }
 
@@ -133,7 +133,7 @@ namespace IdentityServer4.ResponseHandling
                 ClientId = validationResult.ValidatedRequest.Client.ClientId,
                 IsOpenId = validationResult.ValidatedRequest.IsOpenIdRequest,
                 Lifetime = response.DeviceCodeLifetime,
-                CreationTime = Clock.UtcNow.UtcDateTime,
+                CreationTime = TimeProvider.GetUtcNow().UtcDateTime,
                 RequestedScopes = validationResult.ValidatedRequest.ValidatedResources.RawScopeValues
             });
 
