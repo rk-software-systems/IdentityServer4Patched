@@ -37,6 +37,8 @@ jobs:
     - run: ./create-nuget-config.sh ${{ secrets.NUGETKEY }}
 
     - run: ./build.sh
+    
+    - run: ls
 
     - run: |
         dotnet nuget push .\artifacts\*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
