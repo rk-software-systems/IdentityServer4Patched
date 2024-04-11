@@ -32,6 +32,8 @@ jobs:
 
     - run: dotnet --info
     
+    - run: ls
+    
     - run: ./create-nuget-config.sh ${{ secrets.NUGETKEY }}
 
     - run: ./build.sh
