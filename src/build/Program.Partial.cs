@@ -55,6 +55,11 @@ sealed partial class Program
 
         Target("default", DependsOn(Targets.Test, Targets.Pack));
 
-        await RunTargetsAndExitAsync(args, ex => ex is SimpleExec.NonZeroExitCodeException || ex.Message.EndsWith(EnvVarMissing, StringComparison.OrdinalIgnoreCase), Prefix);
+#pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
+        await RunTargetsAndExitAsync(
+            args, 
+            ex => ex is SimpleExec.ExitCodeException || ex.Message.EndsWith(EnvVarMissing, StringComparison.OrdinalIgnoreCase), 
+            getMessagePrefix: () => Prefix);
+#pragma warning restore CA2007 // Consider calling ConfigureAwait on the awaited task
     }
 }
