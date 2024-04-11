@@ -2,27 +2,26 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
 
+    <!--Package description-->
+    <PropertyGroup>
         <PackageId>RKSoftware.IdentityServer4.Storage</PackageId>
         <Description>Storage interfaces and models for IdentityServer4</Description>
         <Authors>Brock Allen;Dominick Baier;Kanstantsin Karakou</Authors>
-
         <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer</PackageTags>
         <PackageIcon>icon.jpg</PackageIcon>
         <PackageProjectUrl>https://github.com/IdentityServer/IdentityServer4</PackageProjectUrl>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageReleaseNotes>https://github.com/IdentityServer/IdentityServer4/releases</PackageReleaseNotes>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
+    <!--Analyzers-->
     <PropertyGroup>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisMode>AllEnabledByDefault</AnalysisMode>
         <AnalysisLevel>latest</AnalysisLevel>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">True</ContinuousIntegrationBuild>
-        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
     </PropertyGroup>
 
     <ItemGroup>
@@ -36,12 +35,15 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
 
+    <!--Packages-->
     <ItemGroup>
         <PackageReference Include="IdentityModel.RKSoftware" Version="8.0.3-alpha.0.2" />
         <PackageReference Include="System.Text.Json" Version="8.0.3" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
         <PackageReference Update="MinVer" Version="5.0.0" />
     </ItemGroup>
 
+    <!--MinVer-->
     <Target Name="SetAssemblyVersion" AfterTargets="MinVer">
         <PropertyGroup>
             <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
