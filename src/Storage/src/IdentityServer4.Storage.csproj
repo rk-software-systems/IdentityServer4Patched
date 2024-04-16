@@ -40,7 +40,7 @@
         <PackageReference Include="RKSoftware.IdentityModel" Version="8.0.1" />
         <PackageReference Include="System.Text.Json" Version="8.0.3" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-        <PackageReference Update="MinVer" Version="5.0.0" />
+        <PackageReference Include="MinVer" Version="5.0.0" />
     </ItemGroup>
 
     <!--MinVer-->
