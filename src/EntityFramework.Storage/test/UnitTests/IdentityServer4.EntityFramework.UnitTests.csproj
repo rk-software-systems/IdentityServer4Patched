@@ -1,23 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <PropertyGroup>
+        <TargetFrameworks>net8.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-    <AssemblyOriginatorKeyFile>../../../../key.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
-  </PropertyGroup>
+    <PropertyGroup>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+        <AnalysisLevel>latest</AnalysisLevel>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\IdentityServer4.EntityFramework.Storage.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+        <PackageReference Include="xunit" Version="2.7.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.8">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Include="xunit" Version="2.7.0" />
-    
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\IdentityServer4.EntityFramework.Storage.csproj" />
+    </ItemGroup>
 
 </Project>
