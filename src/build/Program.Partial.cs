@@ -28,25 +28,27 @@ sealed partial class Program
             Run("dotnet", "clean -c Release -v m --nologo", echoPrefix: Prefix);
         });
 
-        //Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
-        //{
-        //    Run("dotnet", "build -c Release --nologo", echoPrefix: Prefix);
-        //});
+        Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
+        {
+            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
+
+            Run("dotnet", $"build {project} -c Release --nologo", echoPrefix: Prefix);
+        });
 
         //Target(Targets.Test, DependsOn(Targets.Build), () =>
         //{
         //    Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
         //});
 
-        //Target(Targets.CleanPackOutput, () =>
-        //{
-        //    if (Directory.Exists(PackOutput))
-        //    {
-        //        Directory.Delete(PackOutput, true);
-        //    }
-        //});
+        Target(Targets.CleanPackOutput, () =>
+        {
+            if (Directory.Exists(PackOutput))
+            {
+                Directory.Delete(PackOutput, true);
+            }
+        });
 
-        Target(Targets.Pack, DependsOn(Targets.CleanBuildOutput), () =>
+        Target(Targets.Pack, DependsOn(Targets.Build, Targets.CleanPackOutput), () =>
         {
             var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
 
