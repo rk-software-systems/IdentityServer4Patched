@@ -36,6 +36,8 @@ jobs:
     
     - run: ls
     
+    #- run: git update-index --chmod=+x ./create-nuget-config.sh
+    
     - run: ./create-nuget-config.sh ${{ secrets.NUGETKEY }}
   
     - run: dotnet tool restore
