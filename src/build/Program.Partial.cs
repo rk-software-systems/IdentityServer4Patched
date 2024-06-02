@@ -46,7 +46,7 @@ sealed partial class Program
         //    }
         //});
 
-        Target(Targets.Pack, DependsOn(Targets.CleanPackOutput), () =>
+        Target(Targets.Pack, DependsOn(Targets.CleanBuildOutput), () =>
         {
             var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
 
