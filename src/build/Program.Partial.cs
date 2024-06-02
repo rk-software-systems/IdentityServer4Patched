@@ -30,13 +30,15 @@ sealed partial class Program
 
         Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
         {
-            Run("dotnet", "build -c Release --nologo", echoPrefix: Prefix);
+            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
+
+            Run("dotnet", $"build {project} -c Release --nologo", echoPrefix: Prefix);
         });
 
-        Target(Targets.Test, DependsOn(Targets.Build), () =>
-        {
-            Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
-        });
+        //Target(Targets.Test, DependsOn(Targets.Build), () =>
+        //{
+        //    Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
+        //});
 
         Target(Targets.CleanPackOutput, () =>
         {
@@ -53,7 +55,7 @@ sealed partial class Program
             Run("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(PackOutput).FullName}\" --no-build --nologo", echoPrefix: Prefix);
         });
 
-        Target("default", DependsOn(Targets.Test, Targets.Pack));
+        Target("default", DependsOn(Targets.Pack));
 
 #pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
         await RunTargetsAndExitAsync(

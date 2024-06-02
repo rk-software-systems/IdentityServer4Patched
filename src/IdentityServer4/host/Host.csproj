@@ -22,7 +22,7 @@
 
   <!--Packages-->
   <ItemGroup>
-    <PackageReference Include="RKSoftware.IdentityServer4.EntityFramework" Version="8.0.1" />
+    <PackageReference Include="RKSoftware.IdentityServer4.EntityFramework" Version="8.0.5" />
 
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="8.0.6" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />

@@ -12,7 +12,7 @@
   <PropertyGroup>
     <PackageId>RKSoftware.IdentityServer4.AspNetIdentity</PackageId>
     <Description>ASP.NET Core Identity Integration for IdentityServer4</Description>
-    <Authors>Brock Allen;Dominick Baier</Authors>
+    <Authors>Brock Allen;Dominick Baier;Kanstantsin Karakou;Stsefchak Raman</Authors>
     <AssemblyName>IdentityServer4.AspNetIdentity</AssemblyName>
     <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer;ASP.NET Identity</PackageTags>
     <PackageIcon>icon.jpg</PackageIcon>
@@ -40,7 +40,7 @@
   </ItemGroup>
     
   <ItemGroup>
-    <PackageReference Include="RKSoftware.IdentityServer4" Version="8.0.1" />
+    <PackageReference Include="RKSoftware.IdentityServer4" Version="8.0.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageReference Include="MinVer" Version="5.0.0" />
   </ItemGroup>

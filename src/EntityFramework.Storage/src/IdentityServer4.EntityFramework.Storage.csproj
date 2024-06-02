@@ -3,13 +3,15 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     </PropertyGroup>
 
     <!--Package description-->
     <PropertyGroup>
         <PackageId>RKSoftware.IdentityServer4.EntityFramework.Storage</PackageId>
         <Description>EntityFramework persistence layer for IdentityServer4</Description>
-        <Authors>Brock Allen;Dominick Baier;Scott Brady</Authors>
+        <Authors>Brock Allen;Dominick Baier;Scott Brady;Kanstantsin Karakou;Stsefchak Raman</Authors>
+        <AssemblyName>IdentityServer4.EntityFramework.Storage</AssemblyName>
         <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer;EntityFramework</PackageTags>
         <PackageIcon>icon.jpg</PackageIcon>
         <PackageProjectUrl>https://github.com/IdentityServer/IdentityServer4</PackageProjectUrl>
@@ -37,9 +39,11 @@
 
     <!--Packages-->
     <ItemGroup>
-        <PackageReference Include="RKSoftware.IdentityServer4.Storage" Version="8.0.1" />
+        <PackageReference Include="RKSoftware.IdentityServer4.Storage" Version="8.0.5" />
+      
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.6" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
         <PackageReference Include="MinVer" Version="5.0.0" />
     </ItemGroup>
 

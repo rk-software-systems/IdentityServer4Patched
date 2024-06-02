@@ -3,13 +3,14 @@
     <PropertyGroup>
         <TargetFrameworks>net8.0</TargetFrameworks>        
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     </PropertyGroup>
 
     <!--Package description-->
     <PropertyGroup>
         <PackageId>RKSoftware.IdentityServer4.EntityFramework</PackageId>
         <Description>EntityFramework persistence layer for IdentityServer4</Description>
-        <Authors>Brock Allen;Dominick Baier;Scott Brady</Authors>
+        <Authors>Brock Allen;Dominick Baier;Scott Brady;Kanstantsin Karakou;Stsefchak Raman</Authors>
         <AssemblyName>IdentityServer4.EntityFramework</AssemblyName>
         <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer;EntityFramework</PackageTags>
         <PackageIcon>icon.jpg</PackageIcon>
@@ -42,8 +43,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="RKSoftware.IdentityServer4" Version="8.0.1" />
-      <PackageReference Include="RKSoftware.IdentityServer4.EntityFramework.Storage" Version="8.0.1" />
+      <PackageReference Include="RKSoftware.IdentityServer4" Version="8.0.5" />
+      <PackageReference Include="RKSoftware.IdentityServer4.EntityFramework.Storage" Version="8.0.5" />
     </ItemGroup>
 
     <!--MinVer-->
