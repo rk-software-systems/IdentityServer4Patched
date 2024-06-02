@@ -1,7 +1,6 @@
-﻿namespace build
+namespace build;
+
+partial class Program
 {
-    partial class Program
-    {
-        private const string Prefix = "EntityFramework";
-    }
+    private const string Prefix = "EntityFramework";
 }

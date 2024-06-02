@@ -1,10 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using IdentityServer4.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace IdentityServer4.Models
@@ -28,8 +24,7 @@ namespace IdentityServer4.Models
         /// Initializes a new instance of the <see cref="ApiScope"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        public ApiScope(string name)
-            : this(name, name, null)
+        public ApiScope(string name) : this(name, name, null)
         {
         }
 
@@ -38,8 +33,7 @@ namespace IdentityServer4.Models
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="displayName">The display name.</param>
-        public ApiScope(string name, string displayName)
-            : this(name, displayName, null)
+        public ApiScope(string name, string displayName) : this(name, displayName, null)
         {
         }
 
@@ -48,8 +42,7 @@ namespace IdentityServer4.Models
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="userClaims">List of associated user claims that should be included when this resource is requested.</param>
-        public ApiScope(string name, IEnumerable<string> userClaims)
-            : this(name, name, userClaims)
+        public ApiScope(string name, ICollection<string> userClaims) : this(name, name, userClaims)
         {
         }
 
@@ -60,14 +53,14 @@ namespace IdentityServer4.Models
         /// <param name="displayName">The display name.</param>
         /// <param name="userClaims">List of associated user claims that should be included when this resource is requested.</param>
         /// <exception cref="System.ArgumentNullException">name</exception>
-        public ApiScope(string name, string displayName, IEnumerable<string> userClaims)
+        public ApiScope(string name, string displayName, ICollection<string>? userClaims)
         {
-            if (name.IsMissing()) throw new ArgumentNullException(nameof(name));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
 
             Name = name;
             DisplayName = displayName;
 
-            if (!userClaims.IsNullOrEmpty())
+            if (userClaims != null && userClaims.Count > 0)
             {
                 foreach (var type in userClaims)
                 {
@@ -79,11 +72,11 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Specifies whether the user can de-select the scope on the consent screen. Defaults to false.
         /// </summary>
-        public bool Required { get; set; } = false;
+        public bool Required { get; set; }
 
         /// <summary>
         /// Specifies whether the consent screen will emphasize this scope. Use this setting for sensitive or important scopes. Defaults to false.
         /// </summary>
-        public bool Emphasize { get; set; } = false;
+        public bool Emphasize { get; set; }
     }
 }

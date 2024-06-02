@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -13,6 +13,7 @@ using IdentityServer.UnitTests.Validation.Setup;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace IdentityServer.UnitTests.Validation
@@ -23,27 +24,13 @@ namespace IdentityServer.UnitTests.Validation
 
         private IClientStore _clients = Factory.CreateClientStore();
         private IdentityServerOptions _options = new IdentityServerOptions();
-        private StubClock _clock = new StubClock();
+        private FakeTimeProvider _timeProvider = new FakeTimeProvider(DateTime.UtcNow);
 
         static AccessTokenValidation()
-        {
+        {            
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
-        private DateTime now;
-        public DateTime UtcNow
-        {
-            get
-            {
-                if (now > DateTime.MinValue) return now;
-                return DateTime.UtcNow;
-            }
-        }
-
-        public AccessTokenValidation()
-        {
-            _clock.UtcNowFunc = () => UtcNow;
-        }
 
         [Fact]
         [Trait("Category", Category)]
@@ -126,10 +113,11 @@ namespace IdentityServer.UnitTests.Validation
         [Trait("Category", Category)]
         public async Task Expired_Reference_Token()
         {
-            now = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
+            _timeProvider.SetUtcNow(now);
 
             var store = Factory.CreateReferenceTokenStore();
-            var validator = Factory.CreateTokenValidator(store, clock:_clock);
+            var validator = Factory.CreateTokenValidator(store, timeProvider: _timeProvider);
 
             var token = TokenFactory.CreateAccessToken(new Client { ClientId = "roclient" }, "valid", 2, "read", "write");
             token.CreationTime = now;
@@ -137,6 +125,7 @@ namespace IdentityServer.UnitTests.Validation
             var handle = await store.StoreReferenceTokenAsync(token);
 
             now = now.AddSeconds(3);
+            _timeProvider.SetUtcNow(now);
 
             var result = await validator.ValidateAccessTokenAsync(handle);
 

@@ -1,9 +1,5 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IdentityServer4.Models
 {
@@ -23,9 +19,10 @@ namespace IdentityServer4.Models
         /// Initializes a new instance of the <see cref="Resources"/> class.
         /// </summary>
         /// <param name="other">The other.</param>
-        public Resources(Resources other)
-            : this(other.IdentityResources, other.ApiResources, other.ApiScopes)
+        public Resources(Resources other) : this(other?.IdentityResources, other?.ApiResources, other?.ApiScopes)
         {
+            ArgumentNullException.ThrowIfNull(other, nameof(other));
+
             OfflineAccess = other.OfflineAccess;
         }
 
@@ -35,19 +32,19 @@ namespace IdentityServer4.Models
         /// <param name="identityResources">The identity resources.</param>
         /// <param name="apiResources">The API resources.</param>
         /// <param name="apiScopes">The API scopes.</param>
-        public Resources(IEnumerable<IdentityResource> identityResources, IEnumerable<ApiResource> apiResources, IEnumerable<ApiScope> apiScopes)
+        public Resources(IEnumerable<IdentityResource>? identityResources, IEnumerable<ApiResource>? apiResources, IEnumerable<ApiScope>? apiScopes)
         {
             if (identityResources?.Any() == true)
             {
-                IdentityResources = new HashSet<IdentityResource>(identityResources.ToArray());
+                IdentityResources = new HashSet<IdentityResource>(identityResources);
             }
             if (apiResources?.Any() == true)
             {
-                ApiResources = new HashSet<ApiResource>(apiResources.ToArray());
+                ApiResources = new HashSet<ApiResource>(apiResources);
             }
             if (apiScopes?.Any() == true)
             {
-                ApiScopes = new HashSet<ApiScope>(apiScopes.ToArray());
+                ApiScopes = new HashSet<ApiScope>(apiScopes);
             }
         }
 
@@ -68,7 +65,7 @@ namespace IdentityServer4.Models
         /// Gets or sets the API resources.
         /// </summary>
         public ICollection<ApiResource> ApiResources { get; set; } = new HashSet<ApiResource>();
-        
+
         /// <summary>
         /// Gets or sets the API scopes.
         /// </summary>

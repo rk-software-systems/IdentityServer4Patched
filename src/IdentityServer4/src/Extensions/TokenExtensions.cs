@@ -6,13 +6,15 @@ using IdentityModel;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using IdentityServer4.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.Json.Nodes;
+using System.Text.Json;
 
 namespace IdentityServer4.Extensions
 {
@@ -25,20 +27,20 @@ namespace IdentityServer4.Extensions
         /// Creates the default JWT payload.
         /// </summary>
         /// <param name="token">The token.</param>
-        /// <param name="clock">The clock.</param>
+        /// <param name="timeProvider">The System time provider.</param>
         /// <param name="options">The options</param>
         /// <param name="logger">The logger.</param>
         /// <returns></returns>
         /// <exception cref="Exception">
         /// </exception>
-        public static JwtPayload CreateJwtPayload(this Token token, ISystemClock clock, IdentityServerOptions options, ILogger logger)
+        public static JwtPayload CreateJwtPayload(this Token token, TimeProvider timeProvider, IdentityServerOptions options, ILogger logger)
         {
             var payload = new JwtPayload(
                 token.Issuer,
                 null,
                 null,
-                clock.UtcNow.UtcDateTime,
-                clock.UtcNow.UtcDateTime.AddSeconds(token.Lifetime));
+                timeProvider.GetUtcNow().UtcDateTime,
+                timeProvider.GetUtcNow().UtcDateTime.AddSeconds(token.Lifetime));
 
             foreach (var aud in token.Audiences)
             {
@@ -89,9 +91,9 @@ namespace IdentityServer4.Extensions
             // collection identity comparisons work for the anonymous type
             try
             {
-                var jsonTokens = jsonClaims.Select(x => new { x.Type, JsonValue = JRaw.Parse(x.Value) }).ToArray();
+                var jsonTokens = jsonClaims.Select(x => new { x.Type, JsonValue = JsonNode.Parse(x.Value) }).ToArray();
 
-                var jsonObjects = jsonTokens.Where(x => x.JsonValue.Type == JTokenType.Object).ToArray();
+                var jsonObjects = jsonTokens.Where(x => x.JsonValue.GetValueKind() == JsonValueKind.Object).ToArray();
                 var jsonObjectGroups = jsonObjects.GroupBy(x => x.Type).ToArray();
                 foreach (var group in jsonObjectGroups)
                 {
@@ -103,16 +105,16 @@ namespace IdentityServer4.Extensions
                     if (group.Skip(1).Any())
                     {
                         // add as array
-                        payload.Add(group.Key, group.Select(x => x.JsonValue).ToArray());
+                        payload.Add(group.Key, group.Select(x => JsonSerializer.Deserialize<object>(x.JsonValue)).ToArray());
                     }
                     else
                     {
                         // add just one
-                        payload.Add(group.Key, group.First().JsonValue);
+                        payload.Add(group.Key, JsonSerializer.Deserialize<object>(group.First().JsonValue));
                     }
                 }
 
-                var jsonArrays = jsonTokens.Where(x => x.JsonValue.Type == JTokenType.Array).ToArray();
+                var jsonArrays = jsonTokens.Where(x => x.JsonValue.GetValueKind() == JsonValueKind.Array).ToArray();
                 var jsonArrayGroups = jsonArrays.GroupBy(x => x.Type).ToArray();
                 foreach (var group in jsonArrayGroups)
                 {
@@ -122,15 +124,15 @@ namespace IdentityServer4.Extensions
                             $"Can't add two claims where one is a JSON array and the other is not a JSON array ({group.Key})");
                     }
 
-                    var newArr = new List<JToken>();
+                    var newArr = new List<JsonNode>();
                     foreach (var arrays in group)
                     {
-                        var arr = (JArray)arrays.JsonValue;
+                        var arr = arrays.JsonValue.AsArray();
                         newArr.AddRange(arr);
                     }
 
                     // add just one array for the group/key/claim type
-                    payload.Add(group.Key, newArr.ToArray());
+                    payload.Add(group.Key, newArr.Select(x => JsonSerializer.Deserialize<object>(x)).ToArray());
                 }
 
                 var unsupportedJsonTokens = jsonTokens.Except(jsonObjects).Except(jsonArrays).ToArray();

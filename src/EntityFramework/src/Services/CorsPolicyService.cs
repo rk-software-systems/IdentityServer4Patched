@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -42,6 +42,8 @@ namespace IdentityServer4.EntityFramework.Services
         /// <returns></returns>
         public async Task<bool> IsOriginAllowedAsync(string origin)
         {
+            ArgumentNullException.ThrowIfNull(origin, nameof(origin));
+
             origin = origin.ToLowerInvariant();
 
             // doing this here and not in the ctor because: https://github.com/aspnet/CORS/issues/105
@@ -53,7 +55,7 @@ namespace IdentityServer4.EntityFramework.Services
             
             var isAllowed = await query.AnyAsync();
 
-            _logger.LogDebug("Origin {origin} is allowed: {originAllowed}", origin, isAllowed);
+            _logger.LogDebug("Origin {Origin} is allowed: {OriginAllowed}", origin, isAllowed);
 
             return isAllowed;
         }

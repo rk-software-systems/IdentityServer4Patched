@@ -1,8 +1,6 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using System;
 
 namespace IdentityServer4.Models
 {
@@ -17,7 +15,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the value.
@@ -25,7 +23,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The value.
         /// </value>
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         /// <summary>
         /// Gets or sets the expiration.
@@ -56,8 +54,7 @@ namespace IdentityServer4.Models
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="expiration">The expiration.</param>
-        public Secret(string value, DateTime? expiration = null)
-            : this()
+        public Secret(string value, DateTime? expiration = null) : this()
         {
             Value = value;
             Expiration = expiration;
@@ -69,8 +66,7 @@ namespace IdentityServer4.Models
         /// <param name="value">The value.</param>
         /// <param name="description">The description.</param>
         /// <param name="expiration">The expiration.</param>
-        public Secret(string value, string description, DateTime? expiration = null)
-            : this()
+        public Secret(string value, string description, DateTime? expiration = null) : this()
         {
             Description = description;
             Value = value;
@@ -88,8 +84,8 @@ namespace IdentityServer4.Models
             unchecked
             {
                 var hash = 17;
-                hash = hash * 23 + (Value?.GetHashCode() ?? 0);
-                hash = hash * 23 + (Type?.GetHashCode() ?? 0);
+                hash = hash * 23 + (Value?.GetHashCode(StringComparison.Ordinal) ?? 0);
+                hash = hash * 23 + (Type?.GetHashCode(StringComparison.Ordinal) ?? 0);
 
                 return hash;
             }
@@ -102,15 +98,15 @@ namespace IdentityServer4.Models
         /// <returns>
         ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null) return false;
             var other = obj as Secret;
             if (other == null) return false;
             if (ReferenceEquals(other, this)) return true;
 
-            return String.Equals(other.Type, Type, StringComparison.Ordinal) && 
-                String.Equals(other.Value, Value, StringComparison.Ordinal);
+            return string.Equals(other.Type, Type, StringComparison.Ordinal) && 
+                   string.Equals(other.Value, Value, StringComparison.Ordinal);
         }
     }
 }

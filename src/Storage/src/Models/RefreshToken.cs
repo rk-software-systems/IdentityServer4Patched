@@ -1,9 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace IdentityServer4.Models
@@ -43,10 +40,10 @@ namespace IdentityServer4.Models
         /// <value>
         /// The access token.
         /// </value>
-        public Token AccessToken { get; set; }
+        public Token? AccessToken { get; set; }
 
         /// <summary>
-        /// Gets or sets the original subject that requiested the token.
+        /// Gets or sets the original subject that requested the token.
         /// </summary>
         /// <value>
         /// The subject.
@@ -56,7 +53,7 @@ namespace IdentityServer4.Models
             get
             {
                 var user = new IdentityServerUser(SubjectId);
-                if (AccessToken.Claims != null)
+                if (AccessToken?.Claims != null)
                 {
                     foreach (var claim in AccessToken.Claims)
                     {
@@ -81,7 +78,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The client identifier.
         /// </value>
-        public string ClientId => AccessToken.ClientId;
+        public string? ClientId => AccessToken?.ClientId;
 
         /// <summary>
         /// Gets the subject identifier.
@@ -89,7 +86,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The subject identifier.
         /// </value>
-        public string SubjectId => AccessToken.SubjectId;
+        public string? SubjectId => AccessToken?.SubjectId;
 
         /// <summary>
         /// Gets the session identifier.
@@ -97,7 +94,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The session identifier.
         /// </value>
-        public string SessionId => AccessToken.SessionId;
+        public string? SessionId => AccessToken?.SessionId;
 
         /// <summary>
         /// Gets the description the user assigned to the device being authorized.
@@ -105,7 +102,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The description.
         /// </value>
-        public string Description => AccessToken.Description;
+        public string? Description => AccessToken?.Description;
 
         /// <summary>
         /// Gets the scopes.
@@ -113,6 +110,6 @@ namespace IdentityServer4.Models
         /// <value>
         /// The scopes.
         /// </value>
-        public IEnumerable<string> Scopes => AccessToken.Scopes;
+        public ICollection<string>? Scopes => AccessToken?.Scopes;
     }
 }

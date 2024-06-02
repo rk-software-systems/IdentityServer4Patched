@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -14,198 +14,189 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
-namespace IdentityServer.UnitTests.Services.Default
+namespace IdentityServer.UnitTests.Services.Default;
+
+public class DefaultConsentServiceTests
 {
-    public class DefaultConsentServiceTests
+    private DefaultConsentService _subject;
+    private MockProfileService _mockMockProfileService = new MockProfileService();
+
+    private ClaimsPrincipal _user;
+    private Client _client;
+    private TestUserConsentStore _userConsentStore = new TestUserConsentStore();
+    private FakeTimeProvider _timeProvider = new FakeTimeProvider(DateTime.UtcNow);
+
+    public DefaultConsentServiceTests()
     {
-        private DefaultConsentService _subject;
-        private MockProfileService _mockMockProfileService = new MockProfileService();
-
-        private ClaimsPrincipal _user;
-        private Client _client;
-        private TestUserConsentStore _userConsentStore = new TestUserConsentStore();
-        private StubClock _clock = new StubClock();
-
-        private DateTime now;
-
-        public DefaultConsentServiceTests()
+        _client = new Client
         {
-            _clock.UtcNowFunc = () => UtcNow;
+            ClientId = "client",
+            RequireConsent = true,
+            RequirePkce = false
+        };
 
-            _client = new Client
-            {
-                ClientId = "client",
-                RequireConsent = true,
-                RequirePkce = false
-            };
-
-            _user = new IdentityServerUser("bob")
-            {
-                AdditionalClaims =
-                {
-                    new Claim("foo", "foo1"),
-                    new Claim("foo", "foo2"),
-                    new Claim("bar", "bar1"),
-                    new Claim("bar", "bar2"),
-                    new Claim(JwtClaimTypes.AuthenticationContextClassReference, "acr1")
-                }
-            }.CreatePrincipal();
-
-            _subject = new DefaultConsentService(_clock, _userConsentStore, TestLogger.Create<DefaultConsentService>());
-        }
-
-        public DateTime UtcNow
+        _user = new IdentityServerUser("bob")
         {
-            get
+            AdditionalClaims =
             {
-                if (now > DateTime.MinValue) return now;
-                return DateTime.UtcNow;
+                new Claim("foo", "foo1"),
+                new Claim("foo", "foo2"),
+                new Claim("bar", "bar1"),
+                new Claim("bar", "bar2"),
+                new Claim(JwtClaimTypes.AuthenticationContextClassReference, "acr1")
             }
-        }
+        }.CreatePrincipal();
 
-        [Fact]
-        public async Task UpdateConsentAsync_when_client_does_not_allow_remember_consent_should_not_update_store()
-        {
-            _client.AllowRememberConsent = false;
+        _subject = new DefaultConsentService(_timeProvider, _userConsentStore, TestLogger.Create<DefaultConsentService>());
+    }
 
-            await _subject.UpdateConsentAsync(_user, _client, new [] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+    [Fact]
+    public async Task UpdateConsentAsync_when_client_does_not_allow_remember_consent_should_not_update_store()
+    {
+        _client.AllowRememberConsent = false;
 
-            var consent = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
-            consent.Should().BeNull();
-        }
+        await _subject.UpdateConsentAsync(_user, _client, new [] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task UpdateConsentAsync_should_persist_consent()
-        {
-            await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+        var consent = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
+        consent.Should().BeNull();
+    }
 
-            var consent = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
-            consent.Scopes.Count().Should().Be(2);
-            consent.Scopes.Should().Contain("scope1");
-            consent.Scopes.Should().Contain("scope2");
-        }
+    [Fact]
+    public async Task UpdateConsentAsync_should_persist_consent()
+    {
+        await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task UpdateConsentAsync_empty_scopes_should_should_remove_consent()
-        {
-            await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+        var consent = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
+        consent.Scopes.Count().Should().Be(2);
+        consent.Scopes.Should().Contain("scope1");
+        consent.Scopes.Should().Contain("scope2");
+    }
 
-            await _subject.UpdateConsentAsync(_user, _client, new ParsedScopeValue[] { });
+    [Fact]
+    public async Task UpdateConsentAsync_empty_scopes_should_should_remove_consent()
+    {
+        await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-            var consent = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
-            consent.Should().BeNull();
-        }
+        await _subject.UpdateConsentAsync(_user, _client, new ParsedScopeValue[] { });
 
-        [Fact]
-        public async Task RequiresConsentAsync_client_does_not_require_consent_should_not_require_consent()
-        {
-            _client.RequireConsent = false;
+        var consent = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
+        consent.Should().BeNull();
+    }
 
-            var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+    [Fact]
+    public async Task RequiresConsentAsync_client_does_not_require_consent_should_not_require_consent()
+    {
+        _client.RequireConsent = false;
 
-            result.Should().BeFalse();
-        }
+        var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task RequiresConsentAsync_client_does_not_allow_remember_consent_should_require_consent()
-        {
-            _client.AllowRememberConsent = false;
+        result.Should().BeFalse();
+    }
 
-            var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+    [Fact]
+    public async Task RequiresConsentAsync_client_does_not_allow_remember_consent_should_require_consent()
+    {
+        _client.AllowRememberConsent = false;
 
-            result.Should().BeTrue();
-        }
+        var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task RequiresConsentAsync_no_scopes_should_not_require_consent()
-        {
-            var result = await _subject.RequiresConsentAsync(_user, _client, new ParsedScopeValue[] { });
+        result.Should().BeTrue();
+    }
 
-            result.Should().BeFalse();
-        }
+    [Fact]
+    public async Task RequiresConsentAsync_no_scopes_should_not_require_consent()
+    {
+        var result = await _subject.RequiresConsentAsync(_user, _client, new ParsedScopeValue[] { });
 
-        [Fact]
-        public async Task RequiresConsentAsync_offline_access_should_require_consent()
-        {
-            var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("offline_access") });
+        result.Should().BeFalse();
+    }
 
-            result.Should().BeTrue();
-        }
+    [Fact]
+    public async Task RequiresConsentAsync_offline_access_should_require_consent()
+    {
+        var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("offline_access") });
 
-        [Fact]
-        public async Task RequiresConsentAsync_no_prior_consent_should_require_consent()
-        {
-            var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+        result.Should().BeTrue();
+    }
 
-            result.Should().BeTrue();
-        }
+    [Fact]
+    public async Task RequiresConsentAsync_no_prior_consent_should_require_consent()
+    {
+        var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task RequiresConsentAsync_prior_consent_should_not_require_consent()
-        {
-            await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+        result.Should().BeTrue();
+    }
 
-            var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+    [Fact]
+    public async Task RequiresConsentAsync_prior_consent_should_not_require_consent()
+    {
+        await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-            result.Should().BeFalse();
-        }
+        var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task RequiresConsentAsync_prior_consent_with_more_scopes_should_not_require_consent()
-        {
-            await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2"), new ParsedScopeValue("scope3") });
+        result.Should().BeFalse();
+    }
 
-            var result = await _subject.RequiresConsentAsync(_user, _client, new [] { new ParsedScopeValue("scope2") });
+    [Fact]
+    public async Task RequiresConsentAsync_prior_consent_with_more_scopes_should_not_require_consent()
+    {
+        await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2"), new ParsedScopeValue("scope3") });
 
-            result.Should().BeFalse();
-        }
+        var result = await _subject.RequiresConsentAsync(_user, _client, new [] { new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task RequiresConsentAsync_prior_consent_with_too_few_scopes_should_require_consent()
-        {
-            await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope2"), new ParsedScopeValue("scope3") });
+        result.Should().BeFalse();
+    }
 
-            var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
+    [Fact]
+    public async Task RequiresConsentAsync_prior_consent_with_too_few_scopes_should_require_consent()
+    {
+        await _subject.UpdateConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope2"), new ParsedScopeValue("scope3") });
 
-            result.Should().BeTrue();
-        }
+        var result = await _subject.RequiresConsentAsync(_user, _client, new[] { new ParsedScopeValue("scope1"), new ParsedScopeValue("scope2") });
 
-        [Fact]
-        public async Task RequiresConsentAsync_expired_consent_should_require_consent()
-        {
-            now = DateTime.UtcNow;
+        result.Should().BeTrue();
+    }
 
-            var scopes = new[] { new ParsedScopeValue("foo"), new ParsedScopeValue("bar") };
-            _client.ConsentLifetime = 2;
+    [Fact]
+    public async Task RequiresConsentAsync_expired_consent_should_require_consent()
+    {
+        var now = DateTime.UtcNow;
+        _timeProvider.SetUtcNow(now);
 
-            await _subject.UpdateConsentAsync(_user, _client, scopes);
+        var scopes = new[] { new ParsedScopeValue("foo"), new ParsedScopeValue("bar") };
+        _client.ConsentLifetime = 2;
 
-            now = now.AddSeconds(3);
+        await _subject.UpdateConsentAsync(_user, _client, scopes);
 
-            var result = await _subject.RequiresConsentAsync(_user, _client, scopes);
+        now = now.AddSeconds(3);
+        _timeProvider.SetUtcNow(now);
 
-            result.Should().BeTrue();
-        }
+        var result = await _subject.RequiresConsentAsync(_user, _client, scopes);
 
-        [Fact]
-        public async Task RequiresConsentAsync_expired_consent_should_remove_consent()
-        {
-            now = DateTime.UtcNow;
+        result.Should().BeTrue();
+    }
 
-            var scopes = new[] { new ParsedScopeValue("foo"), new ParsedScopeValue("bar") };
-            _client.ConsentLifetime = 2;
+    [Fact]
+    public async Task RequiresConsentAsync_expired_consent_should_remove_consent()
+    {
+        var now = DateTime.UtcNow;
+        _timeProvider.SetUtcNow(now);
 
-            await _subject.UpdateConsentAsync(_user, _client, scopes);
+        var scopes = new[] { new ParsedScopeValue("foo"), new ParsedScopeValue("bar") };
+        _client.ConsentLifetime = 2;
 
-            now = now.AddSeconds(3);
+        await _subject.UpdateConsentAsync(_user, _client, scopes);
 
-            await _subject.RequiresConsentAsync(_user, _client, scopes);
+        now = now.AddSeconds(3);
+        _timeProvider.SetUtcNow(now);
 
-            var result = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
+        await _subject.RequiresConsentAsync(_user, _client, scopes);
 
-            result.Should().BeNull();
-        }
+        var result = await _userConsentStore.GetUserConsentAsync(_user.GetSubjectId(), _client.ClientId);
+
+        result.Should().BeNull();
     }
 }

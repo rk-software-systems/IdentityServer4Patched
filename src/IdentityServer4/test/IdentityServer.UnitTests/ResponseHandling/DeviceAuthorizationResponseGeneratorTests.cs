@@ -16,6 +16,7 @@ using IdentityServer4.Services.Default;
 using IdentityServer4.Stores;
 using IdentityServer4.Validation;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace IdentityServer.UnitTests.ResponseHandling
@@ -29,7 +30,7 @@ namespace IdentityServer.UnitTests.ResponseHandling
         private readonly FakeUserCodeGenerator fakeUserCodeGenerator = new FakeUserCodeGenerator();
         private readonly IDeviceFlowCodeService deviceFlowCodeService = new DefaultDeviceFlowCodeService(new InMemoryDeviceFlowStore(), new StubHandleGenerationService());
         private readonly IdentityServerOptions options = new IdentityServerOptions();
-        private readonly StubClock clock = new StubClock();
+        private readonly FakeTimeProvider _timeProvider = new FakeTimeProvider(DateTime.UtcNow);
         
         private readonly DeviceAuthorizationResponseGenerator generator;
         private readonly DeviceAuthorizationRequestValidationResult testResult;
@@ -48,37 +49,37 @@ namespace IdentityServer.UnitTests.ResponseHandling
                 options,
                 new DefaultUserCodeService(new IUserCodeGenerator[] {new NumericUserCodeGenerator(), fakeUserCodeGenerator }),
                 deviceFlowCodeService,
-                clock,
+                _timeProvider,
                 new NullLogger<DeviceAuthorizationResponseGenerator>());
         }
 
         [Fact]
-        public void ProcessAsync_when_valiationresult_null_exect_exception()
+        public async Task ProcessAsync_when_valiationresult_null_exect_exception()
         {
             Func<Task> act = () => generator.ProcessAsync(null, TestBaseUrl);
-            act.Should().Throw<ArgumentNullException>();
+            await act.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
-        public void ProcessAsync_when_valiationresult_client_null_exect_exception()
+        public async Task ProcessAsync_when_valiationresult_client_null_exect_exception()
         {
             var validationResult = new DeviceAuthorizationRequestValidationResult(new ValidatedDeviceAuthorizationRequest());
             Func <Task> act = () => generator.ProcessAsync(validationResult, TestBaseUrl);
-            act.Should().Throw<ArgumentNullException>();
+            await act.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
-        public void ProcessAsync_when_baseurl_null_exect_exception()
+        public async Task ProcessAsync_when_baseurl_null_exect_exception()
         {
             Func<Task> act = () => generator.ProcessAsync(testResult, null);
-            act.Should().Throw<ArgumentException>();
+            await act.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]
         public async Task ProcessAsync_when_user_code_collision_expect_retry()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _timeProvider.SetUtcNow(creationTime);
 
             testResult.ValidatedRequest.Client.UserCodeType = FakeUserCodeGenerator.UserCodeTypeValue;
             await deviceFlowCodeService.StoreDeviceAuthorizationAsync(FakeUserCodeGenerator.TestCollisionUserCode, new DeviceCode());
@@ -92,7 +93,7 @@ namespace IdentityServer.UnitTests.ResponseHandling
         public async Task ProcessAsync_when_user_code_collision_retry_limit_reached_expect_error()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _timeProvider.SetUtcNow(creationTime);
 
             fakeUserCodeGenerator.RetryLimit = 1;
             testResult.ValidatedRequest.Client.UserCodeType = FakeUserCodeGenerator.UserCodeTypeValue;
@@ -105,7 +106,7 @@ namespace IdentityServer.UnitTests.ResponseHandling
         public async Task ProcessAsync_when_generated_expect_user_code_stored()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _timeProvider.SetUtcNow(creationTime);
 
             testResult.ValidatedRequest.RequestedScopes = new List<string> { "openid", "api1" };
             testResult.ValidatedRequest.ValidatedResources = new ResourceValidationResult(new Resources(
@@ -132,7 +133,7 @@ namespace IdentityServer.UnitTests.ResponseHandling
         public async Task ProcessAsync_when_generated_expect_device_code_stored()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _timeProvider.SetUtcNow(creationTime);
 
             var response = await generator.ProcessAsync(testResult, TestBaseUrl);
 

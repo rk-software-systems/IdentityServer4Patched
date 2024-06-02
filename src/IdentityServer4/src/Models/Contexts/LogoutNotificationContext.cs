@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace IdentityServer4.Models
 {
     /// <summary>
-    /// Provides the context necessary to construct a logout notificaiton.
+    /// Provides the context necessary to construct a logout notification.
     /// </summary>
     public class LogoutNotificationContext
     {

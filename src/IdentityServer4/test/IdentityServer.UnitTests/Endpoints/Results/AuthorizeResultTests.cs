@@ -17,6 +17,7 @@ using IdentityServer4.ResponseHandling;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace IdentityServer.UnitTests.Endpoints.Results
@@ -41,7 +42,7 @@ namespace IdentityServer.UnitTests.Endpoints.Results
             _options.UserInteraction.ErrorUrl = "~/error";
             _options.UserInteraction.ErrorIdParameter = "errorId";
 
-            _subject = new AuthorizeResult(_response, _options, _mockUserSession, _mockErrorMessageStore, new StubClock());
+            _subject = new AuthorizeResult(_response, _options, _mockUserSession, _mockErrorMessageStore, new FakeTimeProvider(DateTime.UtcNow));
         }
 
         [Fact]

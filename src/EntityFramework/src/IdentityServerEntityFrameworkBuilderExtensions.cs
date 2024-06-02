@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -46,6 +46,8 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
             where TContext : DbContext, IConfigurationDbContext
         {
+            ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
             builder.Services.AddConfigurationDbContext<TContext>(storeOptionsAction);
 
             builder.AddClientStore<ClientStore>();
@@ -98,6 +100,8 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<OperationalStoreOptions> storeOptionsAction = null)
             where TContext : DbContext, IPersistedGrantDbContext
         {
+            ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
             builder.Services.AddOperationalDbContext<TContext>(storeOptionsAction);
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
@@ -117,6 +121,8 @@ namespace Microsoft.Extensions.DependencyInjection
            this IIdentityServerBuilder builder)
            where T : class, IOperationalStoreNotification
         {
+            ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
             builder.Services.AddOperationalStoreNotification<T>();
             return builder;
         }

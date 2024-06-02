@@ -6,80 +6,71 @@ using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using static IdentityModel.OidcConstants;
-using IdentityServer4.Services;
-using IdentityServer4.Events;
 
-namespace IdentityServer4.AspNetIdentity
+namespace IdentityServer4.AspNetIdentity;
+
+/// <summary>
+/// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.
+/// </summary>
+/// <typeparam name="TUser">The type of the user.</typeparam>
+/// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
+/// <remarks>
+/// Initializes a new instance of the <see cref="ResourceOwnerPasswordValidator{TUser}"/> class.
+/// </remarks>
+/// <param name="userManager">The user manager.</param>
+/// <param name="signInManager">The sign in manager.</param>
+/// <param name="logger">The logger.</param>
+public class ResourceOwnerPasswordValidator<TUser>(
+    UserManager<TUser> userManager,
+    SignInManager<TUser> signInManager,
+    ILogger<ResourceOwnerPasswordValidator<TUser>> logger) : IResourceOwnerPasswordValidator
+    where TUser : class
 {
+    private readonly SignInManager<TUser> _signInManager = signInManager;
+    private readonly UserManager<TUser> _userManager = userManager;
+    private readonly ILogger<ResourceOwnerPasswordValidator<TUser>> _logger = logger;
+
     /// <summary>
-    /// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.
+    /// Validates the resource owner password credential
     /// </summary>
-    /// <typeparam name="TUser">The type of the user.</typeparam>
-    /// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
-    public class ResourceOwnerPasswordValidator<TUser> : IResourceOwnerPasswordValidator
-        where TUser : class
+    /// <param name="context">The context.</param>
+    /// <returns></returns>
+    public virtual async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<ResourceOwnerPasswordValidator<TUser>> _logger;
+        ArgumentNullException.ThrowIfNull(context, nameof(context));
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResourceOwnerPasswordValidator{TUser}"/> class.
-        /// </summary>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="signInManager">The sign in manager.</param>
-        /// <param name="logger">The logger.</param>
-        public ResourceOwnerPasswordValidator(
-            UserManager<TUser> userManager,
-            SignInManager<TUser> signInManager,
-            ILogger<ResourceOwnerPasswordValidator<TUser>> logger)
+        var user = await _userManager.FindByNameAsync(context.UserName);
+        if (user != null)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-        }
-
-        /// <summary>
-        /// Validates the resource owner password credential
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        public virtual async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
-        {
-            var user = await _userManager.FindByNameAsync(context.UserName);
-            if (user != null)
+            var result = await _signInManager.CheckPasswordSignInAsync(user, context.Password, true);
+            if (result.Succeeded)
             {
-                var result = await _signInManager.CheckPasswordSignInAsync(user, context.Password, true);
-                if (result.Succeeded)
-                {
-                    var sub = await _userManager.GetUserIdAsync(user);
+                var sub = await _userManager.GetUserIdAsync(user);
 
-                    _logger.LogInformation("Credentials validated for username: {username}", context.UserName);
+                _logger.LogInformation("Credentials validated for username: {Username}", context.UserName);
 
-                    context.Result = new GrantValidationResult(sub, AuthenticationMethods.Password);
-                    return;
-                }
-                else if (result.IsLockedOut)
-                {
-                    _logger.LogInformation("Authentication failed for username: {username}, reason: locked out", context.UserName);
-                }
-                else if (result.IsNotAllowed)
-                {
-                    _logger.LogInformation("Authentication failed for username: {username}, reason: not allowed", context.UserName);
-                }
-                else
-                {
-                    _logger.LogInformation("Authentication failed for username: {username}, reason: invalid credentials", context.UserName);
-                }
+                context.Result = new GrantValidationResult(sub, AuthenticationMethods.Password);
+                return;
+            }
+            else if (result.IsLockedOut)
+            {
+                _logger.LogInformation("Authentication failed for username: {Username}, reason: locked out", context.UserName);
+            }
+            else if (result.IsNotAllowed)
+            {
+                _logger.LogInformation("Authentication failed for username: {Username}, reason: not allowed", context.UserName);
             }
             else
             {
-                _logger.LogInformation("No user found matching username: {username}", context.UserName);
+                _logger.LogInformation("Authentication failed for username: {Username}, reason: invalid credentials", context.UserName);
             }
-
-            context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
         }
+        else
+        {
+            _logger.LogInformation("No user found matching username: {Username}", context.UserName);
+        }
+
+        context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
     }
 }

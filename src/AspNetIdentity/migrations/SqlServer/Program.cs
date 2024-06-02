@@ -1,20 +1,14 @@
-﻿using IdentityServerHost;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using SqlServer;
 
-namespace SqlServer
-{
-    class Program
-    {
-        public static void Main(string[] args)
-        {
-            var host = BuildWebHost(args);
-            SeedData.EnsureSeedData(host.Services);
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
-    }
-}
+var startup = new Startup(builder.Configuration);
+startup.ConfigureServices(builder.Services);
+
+var app = builder.Build();
+startup.Configure(app);
+
+SeedData.EnsureSeedData(app.Services);
+
+app.Run();

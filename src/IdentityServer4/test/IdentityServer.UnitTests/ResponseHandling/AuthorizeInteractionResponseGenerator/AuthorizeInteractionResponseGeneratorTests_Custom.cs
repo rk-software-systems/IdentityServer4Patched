@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using IdentityServer.UnitTests.Common;
@@ -13,6 +14,7 @@ using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using static IdentityModel.OidcConstants;
 
@@ -20,7 +22,7 @@ namespace IdentityServer.UnitTests.ResponseHandling.AuthorizeInteractionResponse
 {
     public class CustomAuthorizeInteractionResponseGenerator : IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator
     {
-        public CustomAuthorizeInteractionResponseGenerator(ISystemClock clock, ILogger<IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator> logger, IConsentService consent, IProfileService profile) : base(clock, logger, consent, profile)
+        public CustomAuthorizeInteractionResponseGenerator(TimeProvider timeProvider, ILogger<IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator> logger, IConsentService consent, IProfileService profile) : base(timeProvider, logger, consent, profile)
         {
         }
 
@@ -51,12 +53,12 @@ namespace IdentityServer.UnitTests.ResponseHandling.AuthorizeInteractionResponse
         private IdentityServerOptions _options = new IdentityServerOptions();
         private CustomAuthorizeInteractionResponseGenerator _subject;
         private MockConsentService _mockConsentService = new MockConsentService();
-        private StubClock _clock = new StubClock();
+        private TimeProvider _timeProvider = new FakeTimeProvider(DateTime.UtcNow);
 
         public AuthorizeInteractionResponseGeneratorTests_Custom()
         {
             _subject = new CustomAuthorizeInteractionResponseGenerator(
-                _clock,
+                _timeProvider,
                 TestLogger.Create<IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator>(),
                 _mockConsentService,
                 new MockProfileService());

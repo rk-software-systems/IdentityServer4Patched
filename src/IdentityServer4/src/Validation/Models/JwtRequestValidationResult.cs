@@ -12,7 +12,7 @@ namespace IdentityServer4.Validation
     public class JwtRequestValidationResult : ValidationResult
     {
         /// <summary>
-        /// The key/value pairs from the JWT payload of a successfuly validated request.
+        /// The key/value pairs from the JWT payload of a successfully validated request.
         /// </summary>
         public Dictionary<string, string> Payload { get; set; }
     }

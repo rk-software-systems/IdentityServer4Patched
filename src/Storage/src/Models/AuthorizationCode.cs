@@ -1,9 +1,6 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace IdentityServer4.Models
@@ -35,7 +32,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The ID of the client.
         /// </value>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets the subject.
@@ -43,7 +40,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The subject.
         /// </value>
-        public ClaimsPrincipal Subject { get; set; }
+        public ClaimsPrincipal? Subject { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this code is an OpenID Connect code.
@@ -60,7 +57,7 @@ namespace IdentityServer4.Models
         /// The requested scopes.
         /// </value>
         // todo: brock, change to parsed scopes
-        public IEnumerable<string> RequestedScopes { get; set; }
+        public IEnumerable<string>? RequestedScopes { get; set; }
 
         /// <summary>
         /// Gets or sets the redirect URI.
@@ -68,7 +65,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The redirect URI.
         /// </value>
-        public string RedirectUri { get; set; }
+        public string? RedirectUri { get; set; }
 
         /// <summary>
         /// Gets or sets the nonce.
@@ -76,7 +73,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The nonce.
         /// </value>
-        public string Nonce { get; set; }
+        public string? Nonce { get; set; }
 
         /// <summary>
         /// Gets or sets the hashed state (to output s_hash claim).
@@ -84,7 +81,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The hashed state.
         /// </value>
-        public string StateHash { get; set; }
+        public string? StateHash { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether consent was shown.
@@ -100,7 +97,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The session identifier.
         /// </value>
-        public string SessionId { get; set; }
+        public string? SessionId { get; set; }
 
         /// <summary>
         /// Gets or sets the code challenge.
@@ -108,7 +105,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The code challenge.
         /// </value>
-        public string CodeChallenge { get; set; }
+        public string? CodeChallenge { get; set; }
 
         /// <summary>
         /// Gets or sets the code challenge method.
@@ -116,7 +113,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The code challenge method
         /// </value>
-        public string CodeChallengeMethod { get; set; }
+        public string? CodeChallengeMethod { get; set; }
 
         /// <summary>
         /// Gets the description the user assigned to the device being authorized.
@@ -124,7 +121,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets properties

@@ -1,9 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace IdentityServer4.Models
@@ -35,7 +32,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The client identifier.
         /// </value>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Gets the description the user assigned to the device being authorized.
@@ -43,7 +40,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is open identifier.
@@ -67,7 +64,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The authorized scopes.
         /// </value>
-        public IEnumerable<string> RequestedScopes { get; set; }
+        public IEnumerable<string>? RequestedScopes { get; set; }
 
         /// <summary>
         /// Gets or sets the authorized scopes.
@@ -75,7 +72,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The authorized scopes.
         /// </value>
-        public IEnumerable<string> AuthorizedScopes { get; set; }
+        public IEnumerable<string>? AuthorizedScopes { get; set; }
 
         /// <summary>
         /// Gets or sets the subject.
@@ -83,7 +80,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The subject.
         /// </value>
-        public ClaimsPrincipal Subject { get; set; }
+        public ClaimsPrincipal? Subject { get; set; }
 
         /// <summary>
         /// Gets or sets the session identifier.
@@ -91,6 +88,6 @@ namespace IdentityServer4.Models
         /// <value>
         /// The session identifier.
         /// </value>
-        public string SessionId { get; set; }
+        public string? SessionId { get; set; }
     }
 }

@@ -1,7 +1,8 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using IdentityServer.UnitTests.Common;
@@ -12,6 +13,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using IdentityServer4.Validation;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace IdentityServer.UnitTests.Validation.Secrets
@@ -28,7 +30,7 @@ namespace IdentityServer.UnitTests.Validation.Secrets
         public SecretValidation()
         {
             _validator = new SecretValidator(
-                new StubClock(),
+                new FakeTimeProvider(DateTime.UtcNow),
                 new[] { _hashedSecretValidator }, 
                 new Logger<SecretValidator>(new LoggerFactory()));
         }

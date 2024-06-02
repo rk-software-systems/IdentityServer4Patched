@@ -1,10 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using System.Collections.Generic;
-using System.Linq;
-using System;
 using System.Collections;
 using System.Diagnostics;
 
@@ -29,7 +25,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Unique ID of the client
         /// </summary>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets the protocol type.
@@ -42,7 +38,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Client secrets - only relevant for flows that require a secret
         /// </summary>
-        public ICollection<Secret> ClientSecrets { get; set; } = new HashSet<Secret>();
+        public ICollection<Secret> ClientSecrets { get; set;} = new HashSet<Secret>();
 
         /// <summary>
         /// If set to false, no client secret is needed to request tokens at the token endpoint (defaults to <c>true</c>)
@@ -52,27 +48,27 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Client display name (used for logging and consent screen)
         /// </summary>
-        public string ClientName { get; set; }
+        public string? ClientName { get; set; }
 
         /// <summary>
         /// Description of the client.
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// URI to further information about client (used on consent screen)
         /// </summary>
-        public string ClientUri { get; set; }
+        public string? ClientUri { get; set; }
 
         /// <summary>
         /// URI to client logo (used on consent screen)
         /// </summary>
-        public string LogoUri { get; set; }
+        public string? LogoUri { get; set; }
 
         /// <summary>
         /// Specifies whether a consent screen is required (defaults to <c>false</c>)
         /// </summary>
-        public bool RequireConsent { get; set; } = false;
+        public bool RequireConsent { get; set; }
 
         /// <summary>
         /// Specifies whether user can choose to store consent decisions (defaults to <c>true</c>)
@@ -100,12 +96,12 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Specifies whether a proof key can be sent using plain method (not recommended and defaults to <c>false</c>.)
         /// </summary>
-        public bool AllowPlainTextPkce { get; set; } = false;
+        public bool AllowPlainTextPkce { get; set; }
 
         /// <summary>
         /// Specifies whether the client must use a request object on authorize requests (defaults to <c>false</c>.)
         /// </summary>
-        public bool RequireRequestObject { get; set; } = false;
+        public bool RequireRequestObject { get; set; }
         
         /// <summary>
         /// Controls whether access tokens are transmitted via the browser for this client (defaults to <c>false</c>).
@@ -114,7 +110,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// <c>true</c> if access tokens can be transmitted via the browser; otherwise, <c>false</c>.
         /// </value>
-        public bool AllowAccessTokensViaBrowser { get; set; } = false;
+        public bool AllowAccessTokensViaBrowser { get; set; }
 
         /// <summary>
         /// Specifies allowed URIs to return tokens or authorization codes to
@@ -129,7 +125,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Specifies logout URI at client for HTTP front-channel based logout.
         /// </summary>
-        public string FrontChannelLogoutUri { get; set; }
+        public string? FrontChannelLogoutUri { get; set; }
 
         /// <summary>
         /// Specifies if the user's session id should be sent to the FrontChannelLogoutUri. Defaults to <c>true</c>.
@@ -139,7 +135,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Specifies logout URI at client for HTTP back-channel based logout.
         /// </summary>
-        public string BackChannelLogoutUri { get; set; }
+        public string? BackChannelLogoutUri { get; set; }
 
         /// <summary>
         /// Specifies if the user's session id should be sent to the BackChannelLogoutUri. Defaults to <c>true</c>.
@@ -149,7 +145,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Gets or sets a value indicating whether [allow offline access]. Defaults to <c>false</c>.
         /// </summary>
-        public bool AllowOfflineAccess { get; set; } = false;
+        public bool AllowOfflineAccess { get; set; }
 
         /// <summary>
         /// Specifies the api scopes that the client is allowed to request. If empty, the client can't access any scope
@@ -160,7 +156,7 @@ namespace IdentityServer4.Models
         /// When requesting both an id token and access token, should the user claims always be added to the id token instead of requiring the client to use the userinfo endpoint.
         /// Defaults to <c>false</c>.
         /// </summary>
-        public bool AlwaysIncludeUserClaimsInIdToken { get; set; } = false;
+        public bool AlwaysIncludeUserClaimsInIdToken { get; set; }
 
         /// <summary>
         /// Lifetime of identity token in seconds (defaults to 300 seconds / 5 minutes)
@@ -170,7 +166,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Signing algorithm for identity token. If empty, will use the server default signing algorithm.
         /// </summary>
-        public ICollection<string> AllowedIdentityTokenSigningAlgorithms { get; set; } = new HashSet<string>();
+        public ICollection<string> AllowedIdentityTokenSigningAlgorithms { get; set;} = new HashSet<string>();
 
         /// <summary>
         /// Lifetime of access token in seconds (defaults to 3600 seconds / 1 hour)
@@ -195,7 +191,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Lifetime of a user consent in seconds. Defaults to null (no expiration)
         /// </summary>
-        public int? ConsentLifetime { get; set; } = null;
+        public int? ConsentLifetime { get; set; }
 
         /// <summary>
         /// ReUse: the refresh token handle will stay the same when refreshing tokens
@@ -210,7 +206,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// <c>true</c> if the token should be updated; otherwise, <c>false</c>.
         /// </value>
-        public bool UpdateAccessTokenClaimsOnRefresh { get; set; } = false;
+        public bool UpdateAccessTokenClaimsOnRefresh { get; set; }
 
         /// <summary>
         /// Absolute: the refresh token will expire on a fixed point in time (specified by the AbsoluteRefreshTokenLifetime)
@@ -259,7 +255,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// <c>true</c> if claims should always be sent; otherwise, <c>false</c>.
         /// </value>
-        public bool AlwaysSendClientClaims { get; set; } = false;
+        public bool AlwaysSendClientClaims { get; set; }
 
         /// <summary>
         /// Gets or sets a value to prefix it on client claim types. Defaults to <c>client_</c>.
@@ -272,7 +268,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Gets or sets a salt value used in pair-wise subjectId generation for users of this client.
         /// </summary>
-        public string PairWiseSubjectSalt { get; set; }
+        public string? PairWiseSubjectSalt { get; set; }
 
         /// <summary>
         /// The maximum duration (in seconds) since the last time the user authenticated.
@@ -285,7 +281,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The type of the device flow user code.
         /// </value>
-        public string UserCodeType { get; set; }
+        public string? UserCodeType { get; set; }
 
         /// <summary>
         /// Gets or sets the device code lifetime.
@@ -322,27 +318,24 @@ namespace IdentityServer4.Models
         /// or
         /// Grant types list contains duplicate values
         /// </exception>
-        public static void ValidateGrantTypes(IEnumerable<string> grantTypes)
+        public static void ValidateGrantTypes(ICollection<string> grantTypes)
         {
-            if (grantTypes == null)
-            {
-                throw new ArgumentNullException(nameof(grantTypes));
-            }
+            ArgumentNullException.ThrowIfNull(grantTypes, nameof(grantTypes));
 
             // spaces are not allowed in grant types
             foreach (var type in grantTypes)
             {
-                if (type.Contains(' '))
+                if (type.Contains(' ', StringComparison.Ordinal))
                 {
                     throw new InvalidOperationException("Grant types cannot contain spaces");
                 }
             }
 
             // single grant type, seems to be fine
-            if (grantTypes.Count() == 1) return;
+            if (grantTypes.Count == 1) return;
 
             // don't allow duplicate grant types
-            if (grantTypes.Count() != grantTypes.Distinct().Count())
+            if (grantTypes.Count != grantTypes.Distinct().Count())
             {
                 throw new InvalidOperationException("Grant types list contains duplicate values");
             }
@@ -354,7 +347,7 @@ namespace IdentityServer4.Models
             DisallowGrantTypeCombination(GrantType.AuthorizationCode, GrantType.Hybrid, grantTypes);
         }
 
-        private static void DisallowGrantTypeCombination(string value1, string value2, IEnumerable<string> grantTypes)
+        private static void DisallowGrantTypeCombination(string value1, string value2, ICollection<string> grantTypes)
         {
             if (grantTypes.Contains(value1, StringComparer.Ordinal) &&
                 grantTypes.Contains(value2, StringComparer.Ordinal))
@@ -363,7 +356,7 @@ namespace IdentityServer4.Models
             }
         }
 
-        internal class GrantTypeValidatingHashSet : ICollection<string>
+        internal sealed class GrantTypeValidatingHashSet : ICollection<string>
         {
             private readonly ICollection<string> _inner;
 

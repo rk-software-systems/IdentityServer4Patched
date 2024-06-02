@@ -1,8 +1,5 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
 
 namespace IdentityServer4.Models
 {
@@ -17,7 +14,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The key.
         /// </value>
-        public string Key { get; set; }
+        public string? Key { get; set; }
 
         /// <summary>
         /// Gets the type.
@@ -25,7 +22,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The type.
         /// </value>
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Gets the subject identifier.
@@ -33,7 +30,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The subject identifier.
         /// </value>
-        public string SubjectId { get; set; }
+        public string? SubjectId { get; set; }
 
         /// <summary>
         /// Gets the session identifier.
@@ -41,7 +38,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The session identifier.
         /// </value>
-        public string SessionId { get; set; }
+        public string? SessionId { get; set; }
         
         /// <summary>
         /// Gets the client identifier.
@@ -49,7 +46,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The client identifier.
         /// </value>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Gets the description the user assigned to the device being authorized.
@@ -57,7 +54,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the creation time.
@@ -89,6 +86,6 @@ namespace IdentityServer4.Models
         /// <value>
         /// The data.
         /// </value>
-        public string Data { get; set; }
+        public string? Data { get; set; }
     }
 }

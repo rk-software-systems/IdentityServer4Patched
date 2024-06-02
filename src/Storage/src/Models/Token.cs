@@ -1,11 +1,8 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
 using IdentityModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 
 namespace IdentityServer4.Models
@@ -39,7 +36,7 @@ namespace IdentityServer4.Models
         /// <summary>
         /// Specifies the confirmation method of the token. This value, if set, will become the cnf claim.
         /// </summary>
-        public string Confirmation { get; set; }
+        public string? Confirmation { get; set; }
 
         /// <summary>
         /// Gets or sets the audiences.
@@ -48,14 +45,14 @@ namespace IdentityServer4.Models
         /// The audiences.
         /// </value>
         public ICollection<string> Audiences { get; set; } = new HashSet<string>();
-        
+
         /// <summary>
         /// Gets or sets the issuer.
         /// </summary>
         /// <value>
         /// The issuer.
         /// </value>
-        public string Issuer { get; set; }
+        public string? Issuer { get; set; }
         
         /// <summary>
         /// Gets or sets the creation time.
@@ -87,7 +84,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The ID of the client.
         /// </value>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets the type of access token of the client
@@ -95,7 +92,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The access token type specified by the client.
         /// </value>
-        public AccessTokenType AccessTokenType { get; set; }
+        public AccessTokenType? AccessTokenType { get; set; }
 
         /// <summary>
         /// Gets the description the user assigned to the device being authorized.
@@ -103,7 +100,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         /// <summary>
         /// Gets or sets the claims.
@@ -127,7 +124,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The subject identifier.
         /// </value>
-        public string SubjectId => Claims.Where(x => x.Type == JwtClaimTypes.Subject).Select(x => x.Value).SingleOrDefault();
+        public string? SubjectId => Claims.Where(x => x.Type == JwtClaimTypes.Subject).Select(x => x.Value).SingleOrDefault();
 
         /// <summary>
         /// Gets the session identifier.
@@ -135,7 +132,7 @@ namespace IdentityServer4.Models
         /// <value>
         /// The session identifier.
         /// </value>
-        public string SessionId => Claims.Where(x => x.Type == JwtClaimTypes.SessionId).Select(x => x.Value).SingleOrDefault();
+        public string? SessionId => Claims.Where(x => x.Type == JwtClaimTypes.SessionId).Select(x => x.Value).SingleOrDefault();
 
         /// <summary>
         /// Gets the scopes.
@@ -143,6 +140,6 @@ namespace IdentityServer4.Models
         /// <value>
         /// The scopes.
         /// </value>
-        public IEnumerable<string> Scopes => Claims.Where(x => x.Type == JwtClaimTypes.Scope).Select(x => x.Value);
+        public ICollection<string> Scopes => Claims.Where(x => x.Type == JwtClaimTypes.Scope).Select(x => x.Value).ToHashSet();
     }
 }

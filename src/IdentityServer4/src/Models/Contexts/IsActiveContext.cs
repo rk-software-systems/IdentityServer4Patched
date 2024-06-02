@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -54,7 +54,7 @@ namespace IdentityServer4.Models
         public string Caller { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the subject is active and can recieve tokens.
+        /// Gets or sets a value indicating whether the subject is active and can receive tokens.
         /// </summary>
         /// <value>
         ///   <c>true</c> if the subject is active; otherwise, <c>false</c>.

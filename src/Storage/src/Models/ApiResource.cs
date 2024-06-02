@@ -1,10 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using IdentityServer4.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace IdentityServer4.Models
@@ -28,8 +24,7 @@ namespace IdentityServer4.Models
         /// Initializes a new instance of the <see cref="ApiResource"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        public ApiResource(string name)
-            : this(name, name, null)
+        public ApiResource(string name) : this(name, name, null)
         {
         }
 
@@ -38,8 +33,7 @@ namespace IdentityServer4.Models
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="displayName">The display name.</param>
-        public ApiResource(string name, string displayName)
-            : this(name, displayName, null)
+        public ApiResource(string name, string displayName): this(name, displayName, null)
         {
         }
 
@@ -48,8 +42,7 @@ namespace IdentityServer4.Models
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="userClaims">List of associated user claims that should be included when this resource is requested.</param>
-        public ApiResource(string name, IEnumerable<string> userClaims)
-            : this(name, name, userClaims)
+        public ApiResource(string name, ICollection<string> userClaims) : this(name, name, userClaims)
         {
         }
 
@@ -60,14 +53,14 @@ namespace IdentityServer4.Models
         /// <param name="displayName">The display name.</param>
         /// <param name="userClaims">List of associated user claims that should be included when this resource is requested.</param>
         /// <exception cref="System.ArgumentNullException">name</exception>
-        public ApiResource(string name, string displayName, IEnumerable<string> userClaims)
+        public ApiResource(string name, string displayName, ICollection<string>? userClaims)
         {
-            if (name.IsMissing()) throw new ArgumentNullException(nameof(name));
+            ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(name));
 
             Name = name;
             DisplayName = displayName;
 
-            if (!userClaims.IsNullOrEmpty())
+            if(userClaims != null && userClaims.Count > 0)
             {
                 foreach (var type in userClaims)
                 {

@@ -51,7 +51,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 _source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-                Task.Factory.StartNew(() => StartInternalAsync(_source.Token));
+                Task.Factory.StartNew(() => StartInternalAsync(_source.Token), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
             }
             
             return Task.CompletedTask;
@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Stops the token cleanup polling.
         /// </summary>
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             if (_options.EnableTokenCleanup)
             {
@@ -68,11 +68,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 _logger.LogDebug("Stopping grant removal");
 
-                _source.Cancel();
+                await _source.CancelAsync();
                 _source = null;
             }
-
-            return Task.CompletedTask;
         }
 
         private async Task StartInternalAsync(CancellationToken cancellationToken)
@@ -96,7 +94,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Task.Delay exception: {0}. Exiting.", ex.Message);
+                    _logger.LogError("Task.Delay exception: {Message}. Exiting.", ex.Message);
                     break;
                 }
 
@@ -122,7 +120,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             catch (Exception ex)
             {
-                _logger.LogError("Exception removing expired grants: {exception}", ex.Message);
+                _logger.LogError("Exception removing expired grants: {Exception}", ex.Message);
             }
         }
     }

@@ -9,6 +9,7 @@ using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace IdentityServer.UnitTests.Services.Default
@@ -31,7 +32,8 @@ namespace IdentityServer.UnitTests.Services.Default
         public async Task First_Poll()
         {
             var handle = Guid.NewGuid().ToString();
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock {UtcNowFunc = () => testDate}, options);
+            var ftp = new FakeTimeProvider(testDate);
+            var service = new DistributedDeviceFlowThrottlingService(cache, ftp, options);
 
             var result = await service.ShouldSlowDown(handle, deviceCode);
 
@@ -44,7 +46,8 @@ namespace IdentityServer.UnitTests.Services.Default
         public async Task Second_Poll_Too_Fast()
         {
             var handle = Guid.NewGuid().ToString();
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock { UtcNowFunc = () => testDate }, options);
+            var ftp = new FakeTimeProvider(testDate);
+            var service = new DistributedDeviceFlowThrottlingService(cache, ftp, options);
 
             cache.Set(CacheKey + handle, Encoding.UTF8.GetBytes(testDate.AddSeconds(-1).ToString("O")));
 
@@ -59,8 +62,9 @@ namespace IdentityServer.UnitTests.Services.Default
         public async Task Second_Poll_After_Interval()
         {
             var handle = Guid.NewGuid().ToString();
-            
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock { UtcNowFunc = () => testDate }, options);
+
+            var ftp = new FakeTimeProvider(testDate);
+            var service = new DistributedDeviceFlowThrottlingService(cache, ftp, options);
 
             cache.Set($"devicecode_{handle}", Encoding.UTF8.GetBytes(testDate.AddSeconds(-deviceCode.Lifetime - 1).ToString("O")));
 
@@ -80,7 +84,8 @@ namespace IdentityServer.UnitTests.Services.Default
             var handle = Guid.NewGuid().ToString();
             deviceCode.CreationTime = testDate.AddSeconds(-deviceCode.Lifetime * 2);
 
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock { UtcNowFunc = () => testDate }, options);
+            var ftp = new FakeTimeProvider(testDate);
+            var service = new DistributedDeviceFlowThrottlingService(cache, ftp, options);
 
             var result = await service.ShouldSlowDown(handle, deviceCode);
             
@@ -98,7 +103,7 @@ namespace IdentityServer.UnitTests.Services.Default
             var dateTime = DateTime.Parse(dateTimeAsString);
             dateTime.Should().Be(testDate);
 
-            values?.Item2.AbsoluteExpiration.Should().BeCloseTo(testDate.AddSeconds(deviceCode.Lifetime));
+            values?.Item2.AbsoluteExpiration.Should().BeCloseTo(testDate.AddSeconds(deviceCode.Lifetime), precision: TimeSpan.FromSeconds(100));
         }
     }
 

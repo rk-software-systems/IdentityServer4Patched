@@ -1,8 +1,6 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using System;
 using System.Security.Claims;
 
 namespace IdentityServer4.Models
@@ -15,12 +13,12 @@ namespace IdentityServer4.Models
         /// <summary>
         /// The claim type
         /// </summary>
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
         
         /// <summary>
         /// The claim value
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; set; } = string.Empty;
 
         /// <summary>
         /// The claim value type
@@ -65,15 +63,15 @@ namespace IdentityServer4.Models
             {
                 int hash = 17;
 
-                hash = hash * 23 + Value.GetHashCode();
-                hash = hash * 23 + Type.GetHashCode();
-                hash = hash * 23 + ValueType.GetHashCode();
+                hash = hash * 23 + Value.GetHashCode(StringComparison.Ordinal);
+                hash = hash * 23 + Type.GetHashCode(StringComparison.Ordinal);
+                hash = hash * 23 + ValueType.GetHashCode(StringComparison.Ordinal);
                 return hash;
             }
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null) return false;
             if (obj is ClientClaim c)

@@ -13,6 +13,7 @@ using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace IdentityServer.UnitTests.ResponseHandling.AuthorizeInteractionResponseGenerator
@@ -22,12 +23,12 @@ namespace IdentityServer.UnitTests.ResponseHandling.AuthorizeInteractionResponse
         private IdentityServerOptions _options = new IdentityServerOptions();
         private IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator _subject;
         private MockConsentService _mockConsentService = new MockConsentService();
-        private StubClock _clock = new StubClock();
+        private TimeProvider _timeProvider = new FakeTimeProvider(DateTime.UtcNow);
 
         public AuthorizeInteractionResponseGeneratorTests_Login()
         {
             _subject = new IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator(
-                _clock,
+                _timeProvider,
                 TestLogger.Create<IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator>(),
                 _mockConsentService,
                 new MockProfileService());
@@ -168,7 +169,7 @@ namespace IdentityServer.UnitTests.ResponseHandling.AuthorizeInteractionResponse
                 Subject = new IdentityServerUser("123")
                 {
                     IdentityProvider = "local",
-                    AuthenticationTime = _clock.UtcNow.UtcDateTime.Subtract(TimeSpan.FromSeconds(10))
+                    AuthenticationTime = _timeProvider.GetUtcNow().UtcDateTime.Subtract(TimeSpan.FromSeconds(10))
                 }.CreatePrincipal()
             };
 
@@ -190,7 +191,7 @@ namespace IdentityServer.UnitTests.ResponseHandling.AuthorizeInteractionResponse
                 Subject = new IdentityServerUser("123")
                 {
                     IdentityProvider = "local",
-                    AuthenticationTime = _clock.UtcNow.UtcDateTime.Subtract(TimeSpan.FromSeconds(3700))
+                    AuthenticationTime = _timeProvider.GetUtcNow().UtcDateTime.Subtract(TimeSpan.FromSeconds(3700))
                 }.CreatePrincipal()
             };
 
