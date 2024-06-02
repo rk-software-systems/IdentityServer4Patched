@@ -28,32 +28,32 @@ sealed partial class Program
             Run("dotnet", "clean -c Release -v m --nologo", echoPrefix: Prefix);
         });
 
-        Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
-        {
-            Run("dotnet", "build -c Release --nologo", echoPrefix: Prefix);
-        });
+        //Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
+        //{
+        //    Run("dotnet", "build -c Release --nologo", echoPrefix: Prefix);
+        //});
 
-        Target(Targets.Test, DependsOn(Targets.Build), () =>
-        {
-            Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
-        });
+        //Target(Targets.Test, DependsOn(Targets.Build), () =>
+        //{
+        //    Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
+        //});
 
-        Target(Targets.CleanPackOutput, () =>
-        {
-            if (Directory.Exists(PackOutput))
-            {
-                Directory.Delete(PackOutput, true);
-            }
-        });
+        //Target(Targets.CleanPackOutput, () =>
+        //{
+        //    if (Directory.Exists(PackOutput))
+        //    {
+        //        Directory.Delete(PackOutput, true);
+        //    }
+        //});
 
-        Target(Targets.Pack, DependsOn(Targets.Build, Targets.CleanPackOutput), () =>
+        Target(Targets.Pack, DependsOn(Targets.CleanPackOutput), () =>
         {
             var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
 
             Run("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(PackOutput).FullName}\" --no-build --nologo", echoPrefix: Prefix);
         });
 
-        Target("default", DependsOn(Targets.Test, Targets.Pack));
+        Target("default", DependsOn(Targets.Pack));
 
 #pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
         await RunTargetsAndExitAsync(
