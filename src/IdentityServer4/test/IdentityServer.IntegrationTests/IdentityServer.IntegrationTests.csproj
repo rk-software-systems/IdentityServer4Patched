@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RKSoftware.IdentityModel" Version="8.0.5" />    
+    <PackageReference Include="RKSoftware.IdentityModel" />
     
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.6" />

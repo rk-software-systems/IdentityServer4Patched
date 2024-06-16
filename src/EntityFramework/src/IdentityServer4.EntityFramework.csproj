@@ -42,15 +42,15 @@
         <PackageReference Include="MinVer" Version="5.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="RKSoftware.IdentityServer4" Version="8.0.5" />
-      <PackageReference Include="RKSoftware.IdentityServer4.EntityFramework.Storage" Version="8.0.5" />
+    <ItemGroup Condition="'$(Configuration)'=='Release'">
+      <PackageReference Include="RKSoftware.IdentityServer4" />
+      <PackageReference Include="RKSoftware.IdentityServer4.EntityFramework.Storage" />
     </ItemGroup>
 
-    <!--MinVer-->
-    <Target Name="SetAssemblyVersion" AfterTargets="MinVer">
-        <PropertyGroup>
-            <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
-        </PropertyGroup>
-    </Target>
+    <ItemGroup Condition="'$(Configuration)'=='Debug'">
+      <ProjectReference Include="..\..\EntityFramework.Storage\src\IdentityServer4.EntityFramework.Storage.csproj" />
+      <ProjectReference Include="..\..\IdentityServer4\src\IdentityServer4.csproj" />
+    </ItemGroup>
+
+    
 </Project>

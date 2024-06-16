@@ -40,9 +40,16 @@
   </ItemGroup>
     
   <ItemGroup>
-    <PackageReference Include="RKSoftware.IdentityServer4" Version="8.0.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageReference Include="MinVer" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <PackageReference Include="RKSoftware.IdentityServer4"/>
+  </ItemGroup>
+    
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <ProjectReference Include="..\..\IdentityServer4\src\IdentityServer4.csproj" />
   </ItemGroup>
 
 </Project>

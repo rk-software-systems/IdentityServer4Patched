@@ -38,22 +38,21 @@
     </PropertyGroup>
 
     <!--Packages-->
-    <ItemGroup>
-        <PackageReference Include="RKSoftware.IdentityServer4.Storage" Version="8.0.5" />
-      
+    <ItemGroup>        
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.6" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
         <PackageReference Include="MinVer" Version="5.0.0" />
     </ItemGroup>
 
-    <!--MinVer-->
-    <Target Name="SetAssemblyVersion" AfterTargets="MinVer">
-        <PropertyGroup>
-            <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
-        </PropertyGroup>
-    </Target>
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <PackageReference Include="RKSoftware.IdentityServer4.Storage"/>
+  </ItemGroup>
 
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <ProjectReference Include="..\..\Storage\src\IdentityServer4.Storage.csproj"/>
+  </ItemGroup>
+    
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>IdentityServer4.EntityFramework.UnitTests</_Parameter1>

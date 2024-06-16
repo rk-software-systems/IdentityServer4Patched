@@ -1,0 +1,20 @@
+<Project>  
+  <ItemGroup>
+
+    <!--RKSoftware packages -->
+    <PackageReference Update="RKSoftware.IdentityModel" Version="8.0.5" />
+	
+	<PackageReference Update="RKSoftware.IdentityServer4.Storage" Version="$(IdentityServerVersion)" />
+    <PackageReference Update="RKSoftware.IdentityServer4" Version="$(IdentityServerVersion)" />
+	<PackageReference Update="RKSoftware.IdentityServer4.EntityFramework.Storage" Version="$(IdentityServerVersion)" />
+	<PackageReference Update="RKSoftware.IdentityServer4.EntityFramework" Version="$(IdentityServerVersion)" />
+    <PackageReference Update="RKSoftware.IdentityServer4.AspNetIdentity" Version="$(IdentityServerVersion)" />
+  </ItemGroup>    
+  
+  <!--MinVer-->
+	<Target Name="SetAssemblyVersion" AfterTargets="MinVer">
+	  <PropertyGroup>
+		<AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
+	  </PropertyGroup>
+	</Target>
+</Project>

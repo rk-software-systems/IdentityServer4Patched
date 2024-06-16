@@ -7,6 +7,7 @@
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <!--Package description-->
@@ -42,16 +43,10 @@
 
   <!--Packages-->
   <ItemGroup>
-    <PackageReference Include="RKSoftware.IdentityModel" Version="8.0.5" />
+    <PackageReference Include="RKSoftware.IdentityModel" />
     <PackageReference Include="System.Text.Json" Version="8.0.3" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageReference Include="MinVer" Version="5.0.0" />
   </ItemGroup>
-
-  <!--MinVer-->
-  <Target Name="SetAssemblyVersion" AfterTargets="MinVer">
-    <PropertyGroup>
-      <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
-    </PropertyGroup>
-  </Target>
+  
 </Project>

@@ -41,18 +41,18 @@
   </ItemGroup>
 
   <!--Packages-->
-  <ItemGroup>
-    <PackageReference Include="RKSoftware.IdentityServer4.Storage" Version="8.0.5" />
-    
+  <ItemGroup>    
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.6" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageReference Include="MinVer" Version="5.0.0" />
   </ItemGroup>
 
-  <!--MinVer-->
-  <Target Name="SetAssemblyVersion" AfterTargets="MinVer">
-    <PropertyGroup>
-      <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
-    </PropertyGroup>
-  </Target>
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <PackageReference Include="RKSoftware.IdentityServer4.Storage"/>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <ProjectReference Include="..\..\Storage\src\IdentityServer4.Storage.csproj"/>
+  </ItemGroup>
+
 </Project>

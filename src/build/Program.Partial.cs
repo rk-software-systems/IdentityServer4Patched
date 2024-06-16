@@ -35,10 +35,10 @@ sealed partial class Program
             Run("dotnet", $"build {project} -c Release --nologo", echoPrefix: Prefix);
         });
 
-        //Target(Targets.Test, DependsOn(Targets.Build), () =>
-        //{
-        //    Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
-        //});
+        Target(Targets.Test, DependsOn(Targets.Build), () =>
+        {
+            Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
+        });
 
         Target(Targets.CleanPackOutput, () =>
         {
@@ -48,7 +48,7 @@ sealed partial class Program
             }
         });
 
-        Target(Targets.Pack, DependsOn(Targets.Build, Targets.CleanPackOutput), () =>
+        Target(Targets.Pack, DependsOn(Targets.Build, Targets.Test, Targets.CleanPackOutput), () =>
         {
             var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
 
