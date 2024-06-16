@@ -49,6 +49,13 @@ jobs:
         popd
     
     - run: ls src/Storage/artifacts
+    
+    - run: |
+       nupkg_file=$(find "src/Storage/artifacts" -maxdepth 1 -type f -name "*.nupkg" | head -n 1)
+       nupkg_version=$(echo "$nupkg_file" | grep -oP '(?<=\.)(\d+\.\d+\.\d+(?:-[\w\d\.-]+)?)(?=\.nupkg)')
+       echo "Version: $nupkg_version"
+       cat "./src/Directory.Build.targets"
+       sed -i "s/{{IdentityServerVersion}}/$nupkg_version/g" "./src/Directory.Build.targets"
   
     - run: |
         dotnet nuget push ./src/Storage/artifacts/*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
