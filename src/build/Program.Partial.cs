@@ -46,7 +46,7 @@ sealed partial class Program
                 {
                     i++;
                     Console.WriteLine($"Build failed with attempt {i}.");
-                    await Task.Delay(1000000);
+                    await Task.Delay(60000);
                 }
             } while (i < MaxAttempts && !isBuildSucceeded);
 
