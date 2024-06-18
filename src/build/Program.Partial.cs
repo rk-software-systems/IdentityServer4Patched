@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using SimpleExec;
 using static Bullseye.Targets;
 using static SimpleExec.Command;
 
@@ -9,6 +10,7 @@ namespace build;
 
 sealed partial class Program
 {
+    private const int MaxAttempts = 5;
     private const string PackOutput = "./artifacts";
     private const string EnvVarMissing = " environment variable is missing. Aborting.";
 
@@ -23,21 +25,40 @@ sealed partial class Program
 
     static async Task Main(string[] args)
     {
-        Target(Targets.CleanBuildOutput, () =>
+        Target(Targets.CleanBuildOutput, async () =>
         {
-            Run("dotnet", "clean -c Release -v m --nologo", echoPrefix: Prefix);
+            await RunAsync("dotnet", "clean -c Release -v m --nologo", echoPrefix: Prefix);
         });
 
-        Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
+        Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), async () =>
         {
-            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
+            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
+            var i = 0;
+            var isBuildSucceeded = false;
+            do
+            {
+                try
+                {
+                    await RunAsync("dotnet", $"build {project} -c Release --nologo", echoPrefix: Prefix);
+                    isBuildSucceeded = true;
+                }
+                catch (SimpleExec.ExitCodeException ex) when (ex.ExitCode == 1)
+                {
+                    i++;
+                    Console.WriteLine($"Build failed with attempt {i}.");
+                    await Task.Delay(1000000);
+                }
+            } while (i < MaxAttempts && !isBuildSucceeded);
 
-            Run("dotnet", $"build {project} -c Release --nologo", echoPrefix: Prefix);
+            if (!isBuildSucceeded)
+            {
+                throw new ExitCodeException(999);
+            }
         });
 
-        Target(Targets.Test, DependsOn(Targets.Build), () =>
+        Target(Targets.Test, DependsOn(Targets.Build), async () =>
         {
-            Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
+            await RunAsync("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
         });
 
         Target(Targets.CleanPackOutput, () =>
@@ -48,11 +69,11 @@ sealed partial class Program
             }
         });
 
-        Target(Targets.Pack, DependsOn(Targets.Build, Targets.Test, Targets.CleanPackOutput), () =>
+        Target(Targets.Pack, DependsOn(Targets.Build, Targets.Test, Targets.CleanPackOutput), async () =>
         {
-            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
+            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
 
-            Run("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(PackOutput).FullName}\" --no-build --nologo", echoPrefix: Prefix);
+            await RunAsync("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(PackOutput).FullName}\" --no-build --nologo", echoPrefix: Prefix);
         });
 
         Target("default", DependsOn(Targets.Pack));
