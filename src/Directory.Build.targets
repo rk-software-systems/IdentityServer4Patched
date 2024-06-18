@@ -1,8 +1,9 @@
 <Project>  
+
   <ItemGroup>
 
     <!--RKSoftware packages -->
-    <PackageReference Update="RKSoftware.IdentityModel" Version="8.0.5" />
+    <PackageReference Update="RKSoftware.IdentityModel" Version="8.0.12" />
 	
 	<PackageReference Update="RKSoftware.IdentityServer4.Storage" Version="{{IdentityServerVersion}}" />
     <PackageReference Update="RKSoftware.IdentityServer4" Version="{{IdentityServerVersion}}" />
