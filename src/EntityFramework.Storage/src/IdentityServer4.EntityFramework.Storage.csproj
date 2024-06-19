@@ -3,22 +3,24 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     </PropertyGroup>
 
     <!--Package description-->
     <PropertyGroup>
         <PackageId>RKSoftware.IdentityServer4.EntityFramework.Storage</PackageId>
         <Description>EntityFramework persistence layer for IdentityServer4</Description>
-        <Authors>Brock Allen;Dominick Baier;Scott Brady</Authors>
+        <Authors>Brock Allen;Dominick Baier;Scott Brady;Kanstantsin Karakou;Stsefchak Raman</Authors>
+        <AssemblyName>IdentityServer4.EntityFramework.Storage</AssemblyName>
         <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer;EntityFramework</PackageTags>
-        <PackageIcon>icon.jpg</PackageIcon>
-        <PackageProjectUrl>https://github.com/IdentityServer/IdentityServer4</PackageProjectUrl>
+        <PackageIcon>company-logo.png</PackageIcon>
+        <PackageProjectUrl>https://github.com/rk-software-systems/IdentityServer4Patched</PackageProjectUrl>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-        <PackageReleaseNotes>https://github.com/IdentityServer/IdentityServer4/releases</PackageReleaseNotes>
+        <PackageReleaseNotes>https://github.com/rk-software-systems/IdentityServer4Patched/releases</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="../../../icon.jpg" Pack="true" Visible="false" PackagePath="" />
+        <None Include="../../../company-logo.png" Pack="true" Visible="false" PackagePath="" />
     </ItemGroup>
 
     <!--Analyzers-->
@@ -36,20 +38,17 @@
     </PropertyGroup>
 
     <!--Packages-->
-    <ItemGroup>
-        <PackageReference Include="RKSoftware.IdentityServer4.Storage" Version="8.0.1" />
+    <ItemGroup>        
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.6" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
         <PackageReference Include="MinVer" Version="5.0.0" />
     </ItemGroup>
 
-    <!--MinVer-->
-    <Target Name="SetAssemblyVersion" AfterTargets="MinVer">
-        <PropertyGroup>
-            <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
-        </PropertyGroup>
-    </Target>
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\Storage\src\IdentityServer4.Storage.csproj"/>
+  </ItemGroup>
+    
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>IdentityServer4.EntityFramework.UnitTests</_Parameter1>

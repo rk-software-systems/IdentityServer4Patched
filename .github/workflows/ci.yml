@@ -34,10 +34,8 @@ jobs:
 
     - run: dotnet --info
     
-    - run: ls
-    
-    - run: ./create-nuget-config.sh ${{ secrets.NUGETKEY }}
-  
+    - run: ls    
+ 
     - run: dotnet tool restore
     
     # Store  
@@ -46,10 +44,10 @@ jobs:
         ./build.sh "$@"
         popd
     
-    - run: ls src/Storage/artifacts
-  
+    - run: ls src/Storage/artifacts    
+ 
     - run: |
-        dotnet nuget push ./src/Storage/artifacts/*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
+        dotnet nuget push ./src/Storage/artifacts/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
     
     # IdentityServer4
     - run:  |
@@ -60,7 +58,7 @@ jobs:
     - run: ls src/IdentityServer4/artifacts
   
     - run: |
-        dotnet nuget push ./src/IdentityServer4/artifacts/*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
+        dotnet nuget push ./src/IdentityServer4/artifacts/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
 
     # EntityFramework.Storage
     - run: |
@@ -71,7 +69,7 @@ jobs:
     - run: ls src/EntityFramework.Storage/artifacts
 
     - run: |
-        dotnet nuget push ./src/EntityFramework.Storage/artifacts/*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
+        dotnet nuget push ./src/EntityFramework.Storage/artifacts/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
 
     # EntityFramework
     - run: |
@@ -82,7 +80,7 @@ jobs:
     - run: ls src/EntityFramework/artifacts
 
     - run: |
-        dotnet nuget push ./src/EntityFramework/artifacts/*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
+        dotnet nuget push ./src/EntityFramework/artifacts/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
 
     # AspNetIdentity
     - run: |
@@ -93,4 +91,4 @@ jobs:
     - run: ls src/AspNetIdentity/artifacts
 
     - run: |
-        dotnet nuget push ./src/AspNetIdentity/artifacts/*.nupkg -s https://nuget.pkg.github.com/rk-software-systems/index.json -k ${{ secrets.NUGETKEY }}
+        dotnet nuget push ./src/AspNetIdentity/artifacts/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}

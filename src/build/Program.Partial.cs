@@ -23,19 +23,19 @@ sealed partial class Program
 
     static async Task Main(string[] args)
     {
-        Target(Targets.CleanBuildOutput, () =>
+        Target(Targets.CleanBuildOutput, async () =>
         {
-            Run("dotnet", "clean -c Release -v m --nologo", echoPrefix: Prefix);
+            await RunAsync("dotnet", "clean -c Release -v m --nologo", echoPrefix: Prefix);
         });
 
-        Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
+        Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), async () =>
         {
-            Run("dotnet", "build -c Release --nologo", echoPrefix: Prefix);
+            await RunAsync("dotnet", "build -c Release --nologo", echoPrefix: Prefix);
         });
 
-        Target(Targets.Test, DependsOn(Targets.Build), () =>
+        Target(Targets.Test, DependsOn(Targets.Build), async () =>
         {
-            Run("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
+            await RunAsync("dotnet", "test -c Release --no-build --nologo", echoPrefix: Prefix);
         });
 
         Target(Targets.CleanPackOutput, () =>
@@ -46,14 +46,14 @@ sealed partial class Program
             }
         });
 
-        Target(Targets.Pack, DependsOn(Targets.Build, Targets.CleanPackOutput), () =>
+        Target(Targets.Pack, DependsOn(Targets.Build, Targets.Test, Targets.CleanPackOutput), async () =>
         {
-            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
+            var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
 
-            Run("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(PackOutput).FullName}\" --no-build --nologo", echoPrefix: Prefix);
+            await RunAsync("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(PackOutput).FullName}\" --no-build --nologo", echoPrefix: Prefix);
         });
 
-        Target("default", DependsOn(Targets.Test, Targets.Pack));
+        Target("default", DependsOn(Targets.Pack));
 
 #pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
         await RunTargetsAndExitAsync(

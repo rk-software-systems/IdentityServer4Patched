@@ -126,7 +126,7 @@ public class ClientAssertionClient
             Address = TokenEndpoint,
             ClientCredentialStyle = ClientCredentialStyle.PostBody,
             ClientId = ClientId,
-            ClientAssertion =
+            ClientAssertion = new ClientAssertion
             {
                 Type = OidcConstants.ClientAssertionTypes.JwtBearer,
                 Value = token
