@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
@@ -43,9 +43,14 @@
   <!--Packages-->
   <ItemGroup>
     <PackageReference Include="RKSoftware.IdentityModel" />
-    <PackageReference Include="System.Text.Json" Version="8.0.3" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <PackageReference Include="MinVer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MinVer" Version="7.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
