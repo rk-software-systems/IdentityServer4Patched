@@ -3,7 +3,6 @@
 
 
 using IdentityServer4.Models;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Claims;
 
@@ -21,7 +20,7 @@ namespace IdentityServer4.Validation
         /// <value>
         /// The parameters.
         /// </value>
-        public NameValueCollection Parameters { get; set; }
+        public NameValueCollection? Parameters { get; set; }
 
         /// <summary>
         /// Gets or sets the API.
@@ -29,7 +28,7 @@ namespace IdentityServer4.Validation
         /// <value>
         /// The API.
         /// </value>
-        public ApiResource Api { get; set; }
+        public ApiResource? Api { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the token is active.
@@ -45,7 +44,7 @@ namespace IdentityServer4.Validation
         /// <value>
         /// The claims.
         /// </value>
-        public IEnumerable<Claim> Claims { get; set; }
+        public IReadOnlyCollection<Claim>? Claims { get; set; }
 
         /// <summary>
         /// Gets or sets the token.
@@ -53,7 +52,7 @@ namespace IdentityServer4.Validation
         /// <value>
         /// The token.
         /// </value>
-        public string Token { get; set; }
+        public string? Token { get; set; }
     }
 
     /// <summary>

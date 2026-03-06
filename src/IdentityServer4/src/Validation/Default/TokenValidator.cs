@@ -389,7 +389,7 @@ namespace IdentityServer4.Validation
             };
         }
 
-        private IEnumerable<Claim> ReferenceTokenToClaims(Token token)
+        private List<Claim> ReferenceTokenToClaims(Token token)
         {
             var claims = new List<Claim>
             {
