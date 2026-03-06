@@ -1,30 +1,27 @@
 ﻿using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace IdentityServer.UnitTests.Common
 {
     class MockKeyMaterialService : IKeyMaterialService
     {
-        public List<SigningCredentials> SigningCredentials = new List<SigningCredentials>();
-        public List<SecurityKeyInfo> ValidationKeys = new List<SecurityKeyInfo>();
+        public List<SigningCredentials> SigningCredentials = new();
+        public List<SecurityKeyInfo> ValidationKeys = new();
 
-        public Task<IEnumerable<SigningCredentials>> GetAllSigningCredentialsAsync()
+        public Task<IReadOnlyCollection<SigningCredentials>> GetAllSigningCredentialsAsync()
         {
-            return Task.FromResult(SigningCredentials.AsEnumerable());
+            return Task.FromResult((IReadOnlyCollection<SigningCredentials>)SigningCredentials);
         }
 
-        public Task<SigningCredentials> GetSigningCredentialsAsync(IEnumerable<string> allowedAlgorithms = null)
+        public Task<SigningCredentials?> GetSigningCredentialsAsync(ICollection<string>? allowedAlgorithms = null)
         {
             return Task.FromResult(SigningCredentials.FirstOrDefault());
         }
 
-        public Task<IEnumerable<SecurityKeyInfo>> GetValidationKeysAsync()
+        public Task<IReadOnlyCollection<SecurityKeyInfo>> GetValidationKeysAsync()
         {
-            return Task.FromResult(ValidationKeys.AsEnumerable());
+            return Task.FromResult((IReadOnlyCollection<SecurityKeyInfo>)ValidationKeys);
         }
     }
 }
