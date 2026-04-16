@@ -102,31 +102,32 @@ namespace IdentityServer4.Models
             };
         }
 
-        internal static ICollection<string> FindMatchingSigningAlgorithms(this IEnumerable<ApiResource> apiResources)
+        internal static ICollection<string> FindMatchingSigningAlgorithms(this ICollection<ApiResource> apiResources)
         {
-            var apis = apiResources.ToList();
-
-            if (apis.IsNullOrEmpty())
+            if (apiResources.Count == 0)
             {
                 return new List<string>();
             }
 
             // only one API resource request, forward the allowed signing algorithms (if any)
-            if (apis.Count == 1)
+            if (apiResources.Count == 1)
             {
-                return apis.First().AllowedAccessTokenSigningAlgorithms;
+                return apiResources.First().AllowedAccessTokenSigningAlgorithms;
             }
             
-            var allAlgorithms = apis.Where(r => r.AllowedAccessTokenSigningAlgorithms.Any()).Select(r => r.AllowedAccessTokenSigningAlgorithms).ToList();
+            var allAlgorithms = apiResources
+                .Where(r => r.AllowedAccessTokenSigningAlgorithms.Count > 0)
+                .Select(r => r.AllowedAccessTokenSigningAlgorithms)
+                .ToList();
 
             // resources need to agree on allowed signing algorithms
-            if (allAlgorithms.Any())
+            if (allAlgorithms.Count > 0)
             {
-                var allowedAlgorithms = IntersectLists(allAlgorithms);
+                var allowedAlgorithms = IntersectLists(allAlgorithms).ToHashSet();
 
-                if (allowedAlgorithms.Any())
+                if (allowedAlgorithms.Count > 0)
                 {
-                    return allowedAlgorithms.ToHashSet();
+                    return allowedAlgorithms;
                 }
 
                 throw new InvalidOperationException("Signing algorithms requirements for requested resources are not compatible.");

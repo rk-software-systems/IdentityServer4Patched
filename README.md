@@ -2,7 +2,7 @@
 
 This is a fork of the IdentityServer4 libraries. The original library can be found [here](https://github.com/IdentityServer/IdentityServer4).
 
-This IdentityServer4 targets .NET 8.
+This IdentityServer4 targets .NET 10.
 
 ## NuGet
 

@@ -3,7 +3,7 @@
   <ItemGroup>
 
     <!--RKSoftware packages -->
-    <PackageReference Update="RKSoftware.IdentityModel" Version="8.0.12" />
+    <PackageReference Update="RKSoftware.IdentityModel" Version="10.0.1" />
   </ItemGroup>    
   
   <!--MinVer-->

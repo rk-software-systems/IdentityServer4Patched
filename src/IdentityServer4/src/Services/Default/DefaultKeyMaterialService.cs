@@ -2,13 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using IdentityServer4.Stores;
 using IdentityServer4.Models;
-using System.Linq;
-using System;
 using IdentityServer4.Extensions;
 
 namespace IdentityServer4.Services
@@ -34,11 +30,11 @@ namespace IdentityServer4.Services
         }
 
         /// <inheritdoc/>
-        public async Task<SigningCredentials> GetSigningCredentialsAsync(IEnumerable<string> allowedAlgorithms = null)
+        public async Task<SigningCredentials?> GetSigningCredentialsAsync(ICollection<string>? allowedAlgorithms = null)
         {
             if (_signingCredentialStores.Any())
             {
-                if (allowedAlgorithms.IsNullOrEmpty())
+                if (allowedAlgorithms == null || allowedAlgorithms.Count == 0)
                 {
                     return await _signingCredentialStores.First().GetSigningCredentialsAsync();
                 }
@@ -56,7 +52,7 @@ namespace IdentityServer4.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<SigningCredentials>> GetAllSigningCredentialsAsync()
+        public async Task<IReadOnlyCollection<SigningCredentials>> GetAllSigningCredentialsAsync()
         {
             var credentials = new List<SigningCredentials>();
 
@@ -69,7 +65,7 @@ namespace IdentityServer4.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<SecurityKeyInfo>> GetValidationKeysAsync()
+        public async Task<IReadOnlyCollection<SecurityKeyInfo>> GetValidationKeysAsync()
         {
             var keys = new List<SecurityKeyInfo>();
 
